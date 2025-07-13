@@ -1,7 +1,7 @@
 {
-  "name": "testeapi-backend",
+  "name": "loja-backend",
   "version": "1.0.0",
-  "description": "Backend para a loja processar pagamentos Pague-X",
+  "description": "Backend para a loja processar pagamentos.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

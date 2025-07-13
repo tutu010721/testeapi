@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clone Completo - Versão Final</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root {
+            --tiktok-red: #FE2C55; --tiktok-black: #161823; --star-yellow: #FFC800;
+            --text-primary: rgba(22, 24, 35, 1); --text-secondary: rgba(22, 24, 35, 0.75);
+            --text-tertiary: rgba(22, 24, 35, 0.5); --bg-primary: #FFFFFF; --bg-secondary: #F8F8F8;
+            --border-color: #EFEFF0; --disabled-color: #C9C9CF;
+        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg-secondary); color: var(--text-primary); }
+        main { padding-top: 60px; padding-bottom: 80px; }
+        .icon { width: 24px; height: 24px; stroke-width: 2; color: var(--text-tertiary); flex-shrink: 0; }
+        header.shop-header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; gap: 12px; padding: 8px 16px; height: 44px; background-color: var(--bg-primary); border-bottom: 1px solid var(--border-color); }
+        .header-logo { height: 28px; width: auto; }
+        .search-container { flex-grow: 1; display: flex; align-items: center; border: 1.5px solid var(--tiktok-red); border-radius: 25px; padding: 6px 12px; gap: 8px; }
+        .search-container .search-icon { width: 20px; height: 20px; color: var(--text-tertiary); }
+        .search-container .search-text { font-size: 16px; font-weight: 500; color: var(--text-tertiary); }
+        .header-icon { width: 28px; height: 28px; flex-shrink: 0; }
+        .carousel-container { position: relative; width: 100%; overflow: hidden; }
+        .carousel-slider { display: flex; transition: transform 0.4s ease-in-out; }
+        .carousel-slider img { width: 100%; flex-shrink: 0; }
+        .carousel-pagination { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+        .pagination-dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.6); cursor: pointer; transition: background-color 0.3s; }
+        .pagination-dot.active { background-color: var(--bg-primary); }
+        .content-section { background-color: var(--bg-primary); margin-bottom: 8px; padding: 16px; }
+        .product-title { font-size: 16px; font-weight: 600; line-height: 22px; margin: 0 0 12px 0; }
+        .price-container { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .current-price { font-size: 22px; font-weight: 700; color: var(--tiktok-red); }
+        .original-price { font-size: 14px; color: var(--text-tertiary); text-decoration: line-through; }
+        .discount-badge { background-color: #FFEBEB; color: var(--tiktok-red); padding: 4px 6px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .product-meta-info { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+        .product-meta-info .sold-by { margin-bottom: 8px; }
+        .product-meta-info .sold-by span { font-weight: 600; color: var(--text-primary); }
+        .product-stats { display: flex; align-items: center; gap: 8px; }
+        .product-stats .rating-stars { display: flex; gap: 2px; }
+        .product-stats .rating-stars .star-icon { width: 16px; height: 16px; }
+        .product-stats .rating-stars .star-icon.filled { fill: var(--star-yellow); }
+        .product-stats .rating-stars .star-icon.half-filled { fill: url(#half-star-gradient); }
+        .product-stats .rating-stars .star-icon.empty { fill: var(--border-color); }
+        .product-stats .rating-value { font-weight: 600; color: var(--text-primary); }
+        .product-stats .divider { border-left: 1px solid var(--border-color); height: 12px; }
+        .clickable-section { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .clickable-section .left-content { display: flex; flex-direction: column; gap: 4px; }
+        .clickable-section .right-content { display: flex; align-items: center; gap: 8px; color: var(--text-primary); font-size: 15px; font-weight: 500; }
+        .clickable-section .right-content.subtle { color: var(--text-tertiary); }
+        .clickable-section .main-text { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+        .clickable-section .sub-text { font-size: 13px; color: var(--text-tertiary); }
+        .reviews-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .reviews-section-header h2 { font-size: 16px; font-weight: 600; margin: 0; }
+        .review-card { padding: 16px 0; border-bottom: 1px solid var(--border-color); }
+        .review-card:first-of-type { padding-top: 0; }
+        .review-card:last-child { border-bottom: none; padding-bottom: 0; }
+        .review-author { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .review-author-info { display: flex; align-items: center; gap: 10px; }
+        .review-author-info img { width: 32px; height: 32px; border-radius: 50%; }
+        .review-author-info span { font-size: 14px; font-weight: 600; }
+        .review-stars { display: flex; gap: 2px; }
+        .review-stars .star-icon { width: 14px; height: 14px; fill: var(--star-yellow); }
+        .review-item-details { font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px; }
+        .review-text { font-size: 15px; line-height: 1.5; margin-bottom: 12px; }
+        .review-images { display: flex; gap: 8px; overflow-x: auto; }
+        .review-images img { width: 72px; height: 72px; border-radius: 4px; object-fit: cover; }
+        .review-date { font-size: 12px; color: var(--text-tertiary); margin-top: 12px; }
+        .about-shop-section { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .shop-avatar { width: 100px; height: auto; }
+        .shop-name { font-size: 15px; font-weight: 600; }
+        .product-description-section { padding: 16px; }
+        .product-description-section h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px 0; }
+        .product-description-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+        .product-description-image { width: 100%; border-radius: 4px; display: block; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-container { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-primary); z-index: 1001; border-radius: 16px 16px 0 0; padding: 16px; transform: translateY(100%); transition: transform 0.3s ease; }
+        .modal-overlay.visible { display: block; opacity: 1; }
+        .modal-container.visible { transform: translateY(0); }
+        .modal-header { display: flex; align-items: flex-start; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); position: relative; }
+        .modal-product-img { width: 80px; height: 80px; border-radius: 4px; }
+        .modal-close-btn { position: absolute; top: 0; right: 0; cursor: pointer; width: 28px; height: 28px; }
+        .modal-section { padding: 16px 0; border-bottom: 1px solid var(--border-color); }
+        .modal-section h3 { font-size: 15px; margin: 0 0 12px 0; }
+        .size-options { display: flex; flex-wrap: wrap; gap: 10px; }
+        .size-btn { padding: 8px 16px; border: 1px solid var(--border-color); background-color: var(--bg-secondary); border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .size-btn.active { border-color: var(--tiktok-red); background-color: #FFF2F4; color: var(--tiktok-red); }
+        .size-btn.disabled { border-color: var(--border-color); background-color: var(--bg-secondary); color: var(--disabled-color); cursor: not-allowed; text-decoration: line-through; }
+        .quantity-selector { display: flex; justify-content: space-between; align-items: center; }
+        .quantity-controls { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 4px; }
+        .quantity-btn { border: none; background: none; font-size: 20px; width: 32px; height: 32px; cursor: pointer; color: var(--text-primary); }
+        .quantity-btn:disabled { color: var(--disabled-color); cursor: not-allowed; }
+        .quantity-value { font-size: 16px; font-weight: 600; padding: 0 16px; }
+        #modal-confirm-btn { width: 100%; padding: 14px; margin-top: 16px; background-color: var(--tiktok-red); color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        #modal-confirm-btn:disabled { background-color: var(--disabled-color); cursor: not-allowed; }
+        footer.action-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 90; display: flex; padding: 12px 16px; background-color: var(--bg-primary); border-top: 1px solid var(--border-color); gap: 12px; }
+        .footer-btn { flex-grow: 1; border: 1.5px solid var(--tiktok-red); background-color: var(--tiktok-red); color: #ffffff; padding: 11px; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <linearGradient id="half-star-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="50%" stop-color="var(--star-yellow)" />
+                <stop offset="50%" stop-color="var(--border-color)" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <header class="shop-header">
+        <img src="data:image/png;base64,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" alt="TikTok Shop Logo" class="header-logo">
+        <div class="search-container">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="search-text">Search</span>
+        </div>
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    </header>
+
+    <main>
+        <section class="carousel-container" id="product-carousel">
+            <div class="carousel-slider">
+                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e42d80beacec4087bb1a7172ed6fe5dc~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 1">
+                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/74324eb384ec477b8eccea8910a7b5ee~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 2">
+                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/4b934462da28482896f515ca9f775dc7~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 3">
+                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/be1b71d95e7a486e99dd6de7ff1cf5ec~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 4">
+                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/cda42dc025594355aaaad9fb3a6b8286~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 5">
+                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/91cd95d3d0ae48d081c3289149208fa2~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 6">
+                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/ea3aa7d877a94a158585c88815906412~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 7">
+            </div>
+            <div class="carousel-pagination"></div>
+        </section>
+
+        <section class="content-section">
+            <div class="price-container">
+                <span class="current-price">R$ 44,80</span>
+                <span class="discount-badge">20% OFF</span>
+                <span class="original-price">R$ 56,00</span>
+            </div>
+            <h2 class="product-title">Tênis KNU Skate Casual Resistente Macio e Leve Frete Rápido</h2>
+            <div class="product-meta-info">
+                <div class="sold-by">Vendido por <span>Vans</span></div>
+                <div class="product-stats">
+                    <span class="rating-value">4.8</span>
+                    <div class="rating-stars">
+                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <svg class="star-icon half-filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </div>
+                    <span>(119)</span>
+                    <div class="divider"></div>
+                    <span>2.3K vendido</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section clickable-section" id="open-modal-btn">
+            <div class="left-content">
+                <span class="main-text">Selecionar opção</span>
+            </div>
+            <div class="right-content subtle">
+                <span id="selected-size-text">tamanho</span>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+        </section>
+
+        <section class="content-section clickable-section">
+            <div class="left-content">
+                <span class="main-text">Envio</span>
+                <span class="sub-text">estimativa de entrega 7 dias</span>
+            </div>
+            <div class="right-content">
+                <span>Frete grátis</span>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="reviews-section-header clickable-section">
+                <h2>Avaliações (119)</h2>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div class="review-card">
+                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Avatar"><span>m***3</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
+                <div class="review-item-details">Item: KNU, 37</div><p class="review-text">entrega rápido, bom pelo preço super indico</p>
+                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/c65a5cc2c77542d19bef84eebc618230~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 1"></div>
+                <div class="review-date">há 4 dias</div>
+            </div>
+            <div class="review-card">
+                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/men/7.jpg" alt="Avatar"><span>L***a</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
+                <div class="review-item-details">Item: KNU, 38</div><p class="review-text">Veio no tamanho certo e confortável e não demorou pra entregar</p>
+                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/1601f4f147d94c529308ca4dd5c9da41~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 2"></div>
+                <div class="review-date">há 1 semana</div>
+            </div>
+            <div class="review-card">
+                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/9.jpg" alt="Avatar"><span>A***e</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
+                <div class="review-item-details">Item: KNU, 40</div><p class="review-text">Eu ameiiiiiiii lindo mesmo! Comprei ele na promoção</p>
+                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/d70ba8de99cd48af8e19982edc856989~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 3"></div>
+                <div class="review-date">há 1 semana</div>
+            </div>
+            <div class="review-card">
+                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/men/12.jpg" alt="Avatar"><span>P***a</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
+                <div class="review-item-details">Item: KNU, 38</div><p class="review-text">Muito estiloso, cadarço grosso como no anúncio. Recomendo!</p>
+                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/80bce918de7144bf88d173d66685aea3~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 4"></div>
+                <div class="review-date">há 2 semanas</div>
+            </div>
+            <div class="review-card">
+                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/14.jpg" alt="Avatar"><span>J***e</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24" fill="var(--border-color)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
+                <div class="review-item-details">Item: KNU, 39</div><p class="review-text">É bonito, mas a forma é um pouco pequena. Aconselho pegar um número maior.</p>
+                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/79856a06bad04ddd8ab423bed9ceedb8~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 5"></div>
+                <div class="review-date">há 3 semanas</div>
+            </div>
+        </section>
+
+        <section class="about-shop-section">
+            <img src="https://logos-world.net/wp-content/uploads/2020/05/Vans-Logo-1966.png" alt="Logo da loja" class="shop-avatar">
+            <span class="shop-name">Vans</span>
+        </section>
+
+        <section class="product-description-section">
+            <h2>Descrição do produto</h2>
+            <p class="product-description-text">
+                O Tênis Knu Skool é uma releitura moderna de um estilo clássico dos anos 90, marcado pela sua lingueta acolchoada e sidestripe moldada em 3D. Com seu perfil "Off The Wall", este tênis de cano baixo e amarrar possui cabedal resistente de camurça e lona, puxadores no calcanhar para facilitar a entrada e o solado Waffle de borracha exclusivo da marca.
+            </p>
+            <h2>TABELA DE MEDIDAS</h2>
+            <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/84d99d5f4d2f433d88046ba439244c26~tplv-aphluv4xwc-resize-webp:800:708.webp" alt="Tabela de Medidas" class="product-description-image">
+        </section>
+        
+    </main>
+
+    <footer class="action-footer">
+        <button class="footer-btn" id="buy-now-button">Comprar agora</button>
+    </footer>
+
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-container" id="modal-container">
+        <div class="modal-header">
+            <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e42d80beacec4087bb1a7172ed6fe5dc~tplv-aphluv4xwc-resize-webp:100:100.webp" class="modal-product-img">
+            <div class="price-container">
+                <span class="current-price">R$ 44,80</span>
+                <span class="original-price">R$ 56,00</span>
+            </div>
+            <svg class="modal-close-btn" id="modal-close-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+        <div class="modal-section">
+            <h3>Tamanhos</h3>
+            <div class="size-options" id="size-options">
+                <button class="size-btn">33</button><button class="size-btn">34</button><button class="size-btn">35</button><button class="size-btn">36</button><button class="size-btn">37</button><button class="size-btn">38</button><button class="size-btn">39</button><button class="size-btn">40</button><button class="size-btn">41</button><button class="size-btn">42</button><button class="size-btn">43</button><button class="size-btn">44</button>
+            </div>
+        </div>
+        <div class="modal-section quantity-selector">
+            <h3>Quantidade</h3>
+            <div class="quantity-controls">
+                <button class="quantity-btn" id="decrease-qty" disabled>&minus;</button>
+                <span class="quantity-value" id="quantity-value">1</span>
+                <button class="quantity-btn" id="increase-qty">&plus;</button>
+            </div>
+        </div>
+        <button id="modal-confirm-btn">Confirmar</button>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Lógica do Carrossel
+    const carousel = document.getElementById('product-carousel');
+    if (carousel) {
+        const slider = carousel.querySelector('.carousel-slider');
+        const paginationContainer = carousel.querySelector('.carousel-pagination');
+        const images = slider.querySelectorAll('img');
+        const imageCount = images.length;
+        let currentIndex = 0;
+        if (imageCount > 0) {
+            for (let i = 0; i < imageCount; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('pagination-dot');
+                dot.addEventListener('click', () => { goToSlide(i); });
+                paginationContainer.appendChild(dot);
+            }
+            const paginationDots = paginationContainer.querySelectorAll('.pagination-dot');
+            const goToSlide = (index) => {
+                currentIndex = index;
+                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+                paginationDots.forEach(d => d.classList.remove('active'));
+                paginationDots[currentIndex].classList.add('active');
+            };
+            goToSlide(0);
+        }
+    }
+
+    // Lógica do Modal
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('modal-close-btn');
+    const overlay = document.getElementById('modal-overlay');
+    const modalContainer = document.getElementById('modal-container');
+    const confirmBtn = document.getElementById('modal-confirm-btn');
+    const sizeOptionsContainer = document.getElementById('size-options');
+    const selectedSizeText = document.querySelector('#open-modal-btn .right-content.subtle span');
+    const decreaseQtyBtn = document.getElementById('decrease-qty');
+    const increaseQtyBtn = document.getElementById('increase-qty');
+    const quantityValueSpan = document.getElementById('quantity-value');
+    let selectedSize = null;
+    let quantity = 1;
+
+    const openModal = () => { overlay.classList.add('visible'); modalContainer.classList.add('visible'); };
+    const closeModal = () => { overlay.classList.remove('visible'); modalContainer.classList.remove('visible'); };
+    const updateQuantity = (newQuantity) => {
+        quantity = newQuantity;
+        quantityValueSpan.textContent = quantity;
+        decreaseQtyBtn.disabled = (quantity <= 1);
+    };
+    const handleSizeSelection = (e) => {
+        if (e.target.classList.contains('size-btn') && !e.target.classList.contains('disabled')) {
+            document.querySelectorAll('.size-btn.active').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            selectedSize = e.target.textContent;
+            confirmBtn.disabled = false;
+        }
+    };
+    const handleConfirm = () => {
+        if (selectedSize) {
+            selectedSizeText.textContent = `Tamanho ${selectedSize}`;
+            closeModal();
+        }
+    };
+    
+    openModalBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    sizeOptionsContainer.addEventListener('click', handleSizeSelection);
+    confirmBtn.addEventListener('click', handleConfirm);
+    increaseQtyBtn.addEventListener('click', () => updateQuantity(quantity + 1));
+    decreaseQtyBtn.addEventListener('click', () => updateQuantity(quantity - 1));
+    confirmBtn.disabled = true;
+
+    // Lógica para Salvar no Carrinho
+    const buyButton = document.getElementById('buy-now-button');
+    buyButton.addEventListener('click', () => {
+        if (!selectedSize) {
+            alert("Por favor, selecione um tamanho antes de comprar.");
+            openModal();
+            return;
+        }
+
+        const productData = {
+            name: "Tênis KNU Skate Casual",
+            variant: `KNU, ${selectedSize}`,
+            price: '44.80',
+            originalPrice: '56.00',
+            image: "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e42d80beacec4087bb1a7172ed6fe5dc~tplv-aphluv4xwc-resize-webp:100:100.webp",
+            quantity: quantity,
+            seller: "Vans"
+        };
+        localStorage.setItem('cartItem', JSON.stringify(productData));
+        window.location.href = 'carrinho.html';
+    });
+});
+</script>
+
+</body>
+</html>

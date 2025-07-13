@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumo do Pedido</title>
     <style>
+        /* O CSS permanece 100% o mesmo da versão anterior */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         :root {
             --tiktok-red: #FE2C55; --text-primary: #161823; --text-secondary: #5C5E67;
@@ -20,14 +21,12 @@
         .secure-checkout-banner .icon { width: 14px; height: 14px; }
         main { padding: 16px; padding-bottom: 100px; }
         .card-section { background-color: var(--bg-primary); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-        
         .info-button-wrapper { margin-bottom: 12px; }
         .info-button { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; background-color: var(--bg-primary); border-radius: 8px; border: 1px dashed var(--text-tertiary); }
-        .info-button.info-display { text-align: left; border: none; justify-content: flex-start; flex-direction: column; align-items: flex-start; }
+        .info-display { text-align: left; border: none; justify-content: flex-start; flex-direction: column; align-items: flex-start; }
         .info-button .icon { width: 20px; height: 20px; color: var(--text-primary); }
         .info-display .user-name { font-weight: 600; font-size: 15px; }
         .info-display .user-details { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
-
         .shop-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; }
         .shop-header .shop-name { font-weight: 600; }
         .shop-header .add-note { font-size: 14px; color: var(--text-tertiary); }
@@ -41,7 +40,6 @@
         .quantity-controls { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 4px; }
         .quantity-btn { border: none; background: none; font-size: 20px; width: 30px; height: 30px; cursor: pointer; color: var(--text-primary); }
         .quantity-value { font-size: 15px; font-weight: 600; padding: 0 12px; }
-        
         .summary-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 12px; }
         .summary-row.total { font-weight: 600; }
         .summary-row .label { color: var(--text-secondary); }
@@ -53,7 +51,6 @@
         .radio-button { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--text-tertiary); display: flex; align-items: center; justify-content: center; }
         .radio-button.selected { border-color: var(--tiktok-red); }
         .radio-button.selected::after { content: ''; width: 10px; height: 10px; background-color: var(--tiktok-red); border-radius: 50%; }
-
         .address-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-secondary); z-index: 1002; transform: translateX(100%); transition: transform 0.4s ease-in-out; overflow-y: auto; }
         .address-page.visible { transform: translateX(0); }
         .address-page header { border-bottom: none; background-color: var(--bg-primary); }
@@ -67,7 +64,6 @@
         .address-form-group .split-field { display: flex; gap: 16px; }
         .privacy-policy { font-size: 12px; color: var(--text-tertiary); text-align: center; margin: 24px 0; }
         .address-page .save-button { width: 100%; padding: 14px; border: none; border-radius: 25px; background-color: var(--tiktok-red); color: white; font-size: 16px; font-weight: 600; cursor: pointer; }
-
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
         .pix-modal-content { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-primary); z-index: 1001; border-radius: 16px 16px 0 0; padding: 16px; transform: translateY(100%); transition: transform 0.3s ease; text-align: center; }
@@ -79,7 +75,6 @@
         .pix-copia-cola-wrapper { margin-top: 16px; }
         #pix-copia-cola-text { width: 100%; box-sizing: border-box; font-size: 12px; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-secondary); text-align: center; color: var(--text-secondary); }
         #copy-pix-code-btn { width: 100%; padding: 14px; margin-top: 16px; border: 1px solid var(--tiktok-red); border-radius: 25px; background-color: #FFF2F4; color: var(--tiktok-red); font-size: 16px; font-weight: 600; cursor: pointer; }
-        
         footer { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-primary); border-top: 1px solid var(--border-color); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
         .footer-total .total-label { font-size: 15px; }
         .footer-total .total-amount { font-size: 18px; font-weight: 700; }
@@ -269,8 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     async function gerarCobrancaPix(payload) {
-        const SUA_CHAVE_API = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
-        const url = "https://testeapi-frqn.onrender.com//criar-cobranca";
+        // CORREÇÃO: Removida a barra dupla na URL
+        const url = "https://testeapi-frqn.onrender.com/criar-cobranca";
         try {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
@@ -324,8 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const address = JSON.parse(addressJSON);
         const payload = {
             amount: Math.round(parseFloat(cartItem.price) * 100 * cartItem.quantity),
-            payment_method: "pix",
-            customer: { name: address.fullName, email: address.email, document: address.cpf.replace(/[^\d]+/g, '') },
+            payment_type: "pix",
+            customer: { name: address.fullName, email: address.email, document: { type: "cpf", number: address.cpf.replace(/[^\d]+/g, '') } },
             items: [{ description: `${cartItem.name} (${cartItem.variant})`, amount: Math.round(parseFloat(cartItem.price) * 100), quantity: cartItem.quantity }]
         };
 

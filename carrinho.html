@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumo do Pedido</title>
     <style>
-        /* O CSS permanece 100% o mesmo da versão anterior */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         :root {
             --tiktok-red: #FE2C55; --text-primary: #161823; --text-secondary: #5C5E67;
@@ -71,7 +70,7 @@
         .pix-modal-content h2 { font-size: 18px; margin-top: 8px; }
         .pix-modal-content p { color: var(--text-secondary); margin-bottom: 24px; font-size: 15px; }
         .pix-modal-close-btn { position: absolute; top: 16px; right: 16px; cursor: pointer; }
-        #pix-qrcode { width: 200px; height: 200px; margin: 0 auto; display: block; background-color: var(--border-color); }
+        #pix-qrcode { width: 200px; height: 200px; margin: 0 auto; display: block; background-color: var(--border-color); object-fit: contain; }
         .pix-copia-cola-wrapper { margin-top: 16px; }
         #pix-copia-cola-text { width: 100%; box-sizing: border-box; font-size: 12px; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-secondary); text-align: center; color: var(--text-secondary); }
         #copy-pix-code-btn { width: 100%; padding: 14px; margin-top: 16px; border: 1px solid var(--tiktok-red); border-radius: 25px; background-color: #FFF2F4; color: var(--tiktok-red); font-size: 16px; font-weight: 600; cursor: pointer; }
@@ -317,27 +316,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const cartItem = JSON.parse(cartItemJSON);
         const address = JSON.parse(addressJSON);
         
-        // --- ATUALIZAÇÃO FINAL NO PAYLOAD ---
+        // --- CORREÇÃO FINAL NO PAYLOAD ---
         const payload = {
             amount: Math.round(parseFloat(cartItem.price) * 100 * cartItem.quantity),
-            paymentMethod: "pix", // API usa "paymentMethod"
+            paymentMethod: "pix",
             customer: {
                 name: address.fullName,
                 email: address.email,
-                phone: address.phone.replace(/[^\d]+/g, ''), // Envia apenas números
+                phone: address.phone.replace(/[^\d]+/g, ''),
                 document: {
                     type: "cpf",
                     number: address.cpf.replace(/[^\d]+/g, '')
                 },
                 address: {
                     street: address.street,
-                    streetNumber: address.number, // API usa "streetNumber"
+                    streetNumber: address.number,
                     complement: address.complement,
                     zipCode: address.cep.replace(/\D/g, ''),
                     neighborhood: address.neighborhood,
                     city: address.city,
                     state: address.state,
-                    country: "BR" // Padrão Brasil
+                    country: "BR"
                 }
             },
             items: [{
@@ -353,13 +352,18 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await gerarCobrancaPix(payload);
             
-            // A resposta da Blackcat coloca os dados do PIX dentro de 'pix'
-            if (response && response.pix && response.pix.qrcode) {
-                // A URL do QR Code vem no campo `image` dentro do objeto pix
-                pixQrCodeImg.src = response.pix.image;
-                pixCopiaColaText.value = response.pix.qrcode;
+            // CORREÇÃO: A resposta da Blackcat coloca os dados do PIX dentro de 'pix'
+            const paymentData = response.pix;
+
+            if (paymentData && paymentData.qrcode) {
+                // CORREÇÃO: A URL da imagem vem no campo `qrcode_image_url`
+                pixQrCodeImg.src = paymentData.qrcode_image_url;
+                pixCopiaColaText.value = paymentData.qrcode;
                 openPixModal();
-            } else { throw new Error(response.message || "Resposta da API não contém as informações do Pix esperadas."); }
+            } else { 
+                console.error("Resposta da API incompleta:", response);
+                throw new Error(response.message || "Resposta da API não contém as informações do Pix esperadas."); 
+            }
         } catch (error) {
             alert(`Ocorreu um erro ao gerar a cobrança: ${error.message}`);
         } finally {

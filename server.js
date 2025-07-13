@@ -9,13 +9,14 @@ app.use(express.json());
 // Sua chave secreta privada da Pague-X.
 const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
 
+// O endpoint correto para criar transações.
 const PagueX_URL = "https://api.pague-x.com/v1/transactions";
 
-// ===================================================================
-// CORREÇÃO FINAL: Vamos testar o formato de autenticação SEM os dois-pontos (:)
-// antes de codificar em Base64. Esta é uma variação comum do padrão Basic Auth.
-const base64Auth = Buffer.from(PAGUE_X_SECRET_KEY).toString('base64');
-// ===================================================================
+// --- ATUALIZAÇÃO FINAL E CORRETA DA AUTENTICAÇÃO ---
+// Codifica a chave secreta no formato Base64, exatamente como a documentação exige,
+// com os dois-pontos (:) no final antes de codificar.
+// O "Buffer" é uma ferramenta do Node.js para manipular dados.
+const base64Auth = Buffer.from(`${PAGUE_X_SECRET_KEY}:`).toString('base64');
 
 app.post('/criar-cobranca', async (req, res) => {
     console.log("Backend: Recebido pedido para criar cobrança:", req.body);
@@ -34,13 +35,15 @@ app.post('/criar-cobranca', async (req, res) => {
         items: req.body.items
     };
     
-    console.log("Backend: Enviando payload para a Pague-X com autorização Basic (formato 2)...");
+    console.log("Backend: Enviando payload para a Pague-X com autorização Basic...");
 
     try {
         const response = await fetch(PagueX_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                // --- A CORREÇÃO ESTÁ AQUI ---
+                // Enviando o cabeçalho 'authorization' no padrão 'Basic'.
                 'authorization': `Basic ${base64Auth}`
             },
             body: JSON.stringify(payload)

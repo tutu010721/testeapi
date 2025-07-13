@@ -13,7 +13,7 @@ const PagueX_URL = "https://api.pague-x.com/v1/transactions";
 
 // --- ATUALIZAÇÃO: Gerando o cabeçalho de autorização no formato CORRETO ---
 // Codifica a chave secreta no formato Base64 como a documentação exige.
-// O "Buffer" é uma ferramenta do Node.js para manipular dados binários.
+// O "Buffer" é uma ferramenta do Node.js para manipular dados.
 const base64Auth = Buffer.from(`${PAGUE_X_SECRET_KEY}:`).toString('base64');
 
 app.post('/criar-cobranca', async (req, res) => {
@@ -40,7 +40,7 @@ app.post('/criar-cobranca', async (req, res) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // --- ATUALIZAÇÃO: Enviando o cabeçalho 'authorization' ---
+                // --- ATUALIZAÇÃO: Enviando o cabeçalho 'authorization' no padrão Basic ---
                 'authorization': `Basic ${base64Auth}`
             },
             body: JSON.stringify(payload)

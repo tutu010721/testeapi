@@ -7,25 +7,28 @@ app.use(cors());
 app.use(express.json());
 
 // ===================================================================
-// ATUALIZAÇÃO: Definindo as DUAS chaves, como a documentação exige.
+// Suas chaves da Blackcat Pagamentos
 const BLACKCAT_PUBLIC_KEY = "pk_13YJ3DhtaH9ZPBo8eVPqMctGqpHB87NayFcO_j_iKEVfgvCR";
 const BLACKCAT_SECRET_KEY = "sk_Y7izervKtLXqR4hUz6tU1eIMX6T9bWbyrCvHxIAsOerkH7Fe";
 
-// ATUALIZAÇÃO: Endpoint correto da Blackcat
-const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/payments";
+// ATUALIZAÇÃO: Endpoint correto para CRIAR TRANSAÇÕES
+const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/transactions";
 
-// --- ATUALIZAÇÃO FINAL E CORRETA DA AUTENTICAÇÃO ---
-// Codifica "chave_publica:chave_secreta" em Base64.
+// ATUALIZAÇÃO: Autenticação no formato CORRETO (PublicKey:SecretKey)
 const base64Auth = Buffer.from(`${BLACKCAT_PUBLIC_KEY}:${BLACKCAT_SECRET_KEY}`).toString('base64');
 // ===================================================================
 
-
 app.post('/criar-cobranca', async (req, res) => {
-    // A lógica interna desta função permanece a mesma, pois o payload está correto.
-    // A única mudança crucial é o `base64Auth` que usamos abaixo.
-    
     console.log("Backend: Recebido pedido para criar cobrança:", req.body);
-    const payload = req.body;
+
+    // O payload recebido do frontend já está quase no formato correto.
+    // A API de /transactions usa "payment_method" em vez de "payment_type"
+    const payload = {
+        amount: req.body.amount,
+        payment_method: "pix", // Campo correto para /transactions
+        customer: req.body.customer,
+        items: req.body.items
+    };
     
     console.log("Backend: Enviando payload para a Blackcat com autenticação Basic (PublicKey:SecretKey)...");
 
@@ -34,8 +37,7 @@ app.post('/criar-cobranca', async (req, res) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // Usando a autorização correta agora
-                'authorization': `Basic ${base64Auth}`
+                'Authorization': `Basic ${base64Auth}`
             },
             body: JSON.stringify(payload)
         });
@@ -48,7 +50,8 @@ app.post('/criar-cobranca', async (req, res) => {
         }
 
         console.log("Backend: Transação criada com sucesso:", data);
-        res.status(200).json(data);
+        // Na resposta, os dados do PIX vêm dentro de 'payment_data'
+        res.status(200).json({ payment_info: data.payment_data });
 
     } catch (error) {
         console.error("Backend: Erro crítico na função fetch:", error);

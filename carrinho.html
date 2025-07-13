@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumo do Pedido</title>
     <style>
-        /* O CSS permanece 100% o mesmo da versão anterior */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         :root {
             --tiktok-red: #FE2C55; --text-primary: #161823; --text-secondary: #5C5E67;
@@ -170,7 +169,6 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- SELETORES DE ELEMENTOS ---
     const cartContainer = document.getElementById('cart-item-container');
     const subtotalAmount = document.getElementById('subtotal-amount');
     const totalAmount = document.getElementById('total-amount');
@@ -190,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const pixCopiaColaText = document.getElementById('pix-copia-cola-text');
     const copyPixCodeBtn = document.getElementById('copy-pix-code-btn');
 
-    // --- FUNÇÕES DE VALIDAÇÃO E BUSCA ---
     function validaCPF(cpf) {
         cpf = String(cpf).replace(/[^\d]+/g, '');
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
@@ -227,13 +224,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- FUNÇÕES DE ABRIR/FECHAR MODAIS ---
     const openAddressPage = () => addressPage.classList.add('visible');
     const closeAddressPage = () => addressPage.classList.remove('visible');
     const openPixModal = () => { pixOverlay.classList.add('visible'); pixModal.classList.add('visible'); };
     const closePixModal = () => { pixOverlay.classList.remove('visible'); pixModal.classList.remove('visible'); };
 
-    // --- LÓGICA DE CARREGAMENTO E EXIBIÇÃO DE DADOS ---
     function loadCartData() {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) {
@@ -264,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     async function gerarCobrancaPix(payload) {
-        // CORREÇÃO: Removida a barra dupla na URL
         const url = "https://testeapi-frqn.onrender.com/criar-cobranca";
         try {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -277,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- EVENT LISTENERS ---
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);
     pixCloseBtn.addEventListener('click', closePixModal);
@@ -341,7 +334,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Roda as funções de carregamento quando a página abre
     loadCartData();
     loadUserData();
 });

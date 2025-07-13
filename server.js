@@ -7,14 +7,15 @@ app.use(cors());
 app.use(express.json());
 
 // Sua chave secreta privada da Pague-X.
-const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZ";
+const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
 
 const PagueX_URL = "https://api.pague-x.com/v1/transactions";
 
-// --- ATUALIZAÇÃO: Gerando o cabeçalho de autorização no formato CORRETO ---
-// Codifica a chave secreta no formato Base64 como a documentação exige.
-// O "Buffer" é uma ferramenta do Node.js para manipular dados.
-const base64Auth = Buffer.from(`${PAGUE_X_SECRET_KEY}:`).toString('base64');
+// ===================================================================
+// CORREÇÃO FINAL: Vamos testar o formato de autenticação SEM os dois-pontos (:)
+// antes de codificar em Base64. Esta é uma variação comum do padrão Basic Auth.
+const base64Auth = Buffer.from(PAGUE_X_SECRET_KEY).toString('base64');
+// ===================================================================
 
 app.post('/criar-cobranca', async (req, res) => {
     console.log("Backend: Recebido pedido para criar cobrança:", req.body);
@@ -33,14 +34,13 @@ app.post('/criar-cobranca', async (req, res) => {
         items: req.body.items
     };
     
-    console.log("Backend: Enviando payload para a Pague-X com autorização Basic...");
+    console.log("Backend: Enviando payload para a Pague-X com autorização Basic (formato 2)...");
 
     try {
         const response = await fetch(PagueX_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // --- ATUALIZAÇÃO: Enviando o cabeçalho 'authorization' no padrão Basic ---
                 'authorization': `Basic ${base64Auth}`
             },
             body: JSON.stringify(payload)
@@ -67,5 +67,5 @@ app.post('/criar-cobranca', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}. Acesse sua loja pelo arquivo index.html`);
+    console.log(`Servidor rodando na porta ${PORT}.`);
 });

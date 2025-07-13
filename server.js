@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 // Sua chave secreta privada da Pague-X.
-const PAGUE_X_SECRET_KEY = "pk_live_v2BhVI3YN6FA8pS1M5j1XIae5UNj7w4uwA";
+const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZ";
 
 const PagueX_URL = "https://api.pague-x.com/v1/transactions";
 

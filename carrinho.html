@@ -89,15 +89,22 @@
         </div>
         <p class="secure-checkout-banner"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Finalização da compra segura garantida</p>
     </header>
+
     <main>
-        <div class="info-button-wrapper" id="address-container"></div>
-        <section class="card-section" id="cart-item-container"><p style="color: var(--text-tertiary);">Seu carrinho está vazio.</p></section>
+        <div class="info-button-wrapper" id="address-container">
+            </div>
+
+        <section class="card-section" id="cart-item-container">
+            <p style="color: var(--text-tertiary);">Seu carrinho está vazio.</p>
+        </section>
+        
         <section class="card-section">
             <h2>Resumo do pedido</h2>
             <div class="summary-row"><span class="label">Subtotal</span><span id="subtotal-amount">R$ 0,00</span></div>
             <div class="summary-row total"><span class="label">Total</span><span id="total-amount">R$ 0,00</span></div>
             <p class="tax-info">Impostos inclusos</p>
         </section>
+
         <section class="card-section payment-method">
             <h2>Forma de pagamento</h2>
             <div class="payment-option">
@@ -106,6 +113,7 @@
             </div>
         </section>
     </main>
+
     <footer>
         <div class="footer-total">
             <span class="total-label" id="footer-total-label">Total (0 itens)</span>
@@ -113,6 +121,7 @@
         </div>
         <button class="footer-button" id="place-order-button">Fazer pedido</button>
     </footer>
+
     <div class="address-page" id="address-page">
         <header>
             <div class="header-top">
@@ -146,6 +155,7 @@
             </form>
         </main>
     </div>
+
     <div class="modal-overlay" id="pix-overlay"></div>
     <div class="pix-modal-content" id="pix-modal">
         <svg class="pix-modal-close-btn" id="pix-modal-close-btn" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -160,6 +170,7 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // --- SELETORES DE ELEMENTOS ---
     const cartContainer = document.getElementById('cart-item-container');
     const subtotalAmount = document.getElementById('subtotal-amount');
     const totalAmount = document.getElementById('total-amount');
@@ -179,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pixCopiaColaText = document.getElementById('pix-copia-cola-text');
     const copyPixCodeBtn = document.getElementById('copy-pix-code-btn');
 
+    // --- FUNÇÕES DE VALIDAÇÃO E BUSCA ---
     function validaCPF(cpf) {
         cpf = String(cpf).replace(/[^\d]+/g, '');
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
@@ -215,11 +227,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- FUNÇÕES DE ABRIR/FECHAR MODAIS ---
     const openAddressPage = () => addressPage.classList.add('visible');
     const closeAddressPage = () => addressPage.classList.remove('visible');
     const openPixModal = () => { pixOverlay.classList.add('visible'); pixModal.classList.add('visible'); };
     const closePixModal = () => { pixOverlay.classList.remove('visible'); pixModal.classList.remove('visible'); };
 
+    // --- LÓGICA DE CARREGAMENTO E EXIBIÇÃO DE DADOS ---
     function loadCartData() {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) {
@@ -262,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- EVENT LISTENERS ---
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);
     pixCloseBtn.addEventListener('click', closePixModal);
@@ -302,30 +317,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const cartItem = JSON.parse(cartItemJSON);
         const address = JSON.parse(addressJSON);
         
-        // --- CORREÇÃO FINAL NO PAYLOAD ---
+        // --- ATUALIZAÇÃO FINAL NO PAYLOAD ---
         const payload = {
             amount: Math.round(parseFloat(cartItem.price) * 100 * cartItem.quantity),
-            payment_method: "pix", // API usa payment_method
+            paymentMethod: "pix", // API usa "paymentMethod"
             customer: {
                 name: address.fullName,
                 email: address.email,
+                phone: address.phone.replace(/[^\d]+/g, ''), // Envia apenas números
                 document: {
                     type: "cpf",
                     number: address.cpf.replace(/[^\d]+/g, '')
                 },
-                // Adicionando o objeto de endereço dentro do cliente
                 address: {
                     street: address.street,
-                    number: address.number,
+                    streetNumber: address.number, // API usa "streetNumber"
+                    complement: address.complement,
+                    zipCode: address.cep.replace(/\D/g, ''),
                     neighborhood: address.neighborhood,
                     city: address.city,
                     state: address.state,
-                    zip_code: address.cep.replace(/\D/g, '')
+                    country: "BR" // Padrão Brasil
                 }
             },
             items: [{
-                title: `${cartItem.name} (${cartItem.variant})`, // API usa "title"
-                unit_price: Math.round(parseFloat(cartItem.price) * 100), // API usa "unit_price"
+                title: `${cartItem.name} (${cartItem.variant})`,
+                unitPrice: Math.round(parseFloat(cartItem.price) * 100),
                 quantity: cartItem.quantity,
                 tangible: true
             }]
@@ -336,10 +353,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await gerarCobrancaPix(payload);
             
-            // CORREÇÃO: A resposta da Blackcat coloca os dados do PIX dentro de 'payment_data'
-            if (response && response.payment_data && response.payment_data.qrcode) {
-                pixQrCodeImg.src = response.payment_data.qrcode_image; // Supondo que a URL da imagem venha aqui
-                pixCopiaColaText.value = response.payment_data.qrcode;
+            // A resposta da Blackcat coloca os dados do PIX dentro de 'pix'
+            if (response && response.pix && response.pix.qrcode) {
+                // A URL do QR Code vem no campo `image` dentro do objeto pix
+                pixQrCodeImg.src = response.pix.image;
+                pixCopiaColaText.value = response.pix.qrcode;
                 openPixModal();
             } else { throw new Error(response.message || "Resposta da API não contém as informações do Pix esperadas."); }
         } catch (error) {

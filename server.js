@@ -7,29 +7,35 @@ app.use(cors());
 app.use(express.json());
 
 // ===================================================================
-// ATUALIZAÇÃO: Chave secreta da Blackcat Pagamentos
+// ATUALIZAÇÃO: Definindo as DUAS chaves, como a documentação exige.
+const BLACKCAT_PUBLIC_KEY = "pk_13YJ3DhtaH9ZPBo8eVPqMctGqpHB87NayFcO_j_iKEVfgvCR";
 const BLACKCAT_SECRET_KEY = "sk_Y7izervKtLXqR4hUz6tU1eIMX6T9bWbyrCvHxIAsOerkH7Fe";
 
-// ATUALIZAÇÃO: Endpoint correto da Blackcat para criar pagamentos
+// ATUALIZAÇÃO: Endpoint correto da Blackcat
 const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/payments";
+
+// --- ATUALIZAÇÃO FINAL E CORRETA DA AUTENTICAÇÃO ---
+// Codifica "chave_publica:chave_secreta" em Base64.
+const base64Auth = Buffer.from(`${BLACKCAT_PUBLIC_KEY}:${BLACKCAT_SECRET_KEY}`).toString('base64');
 // ===================================================================
 
-app.post('/criar-cobranca', async (req, res) => {
-    console.log("Backend: Recebido pedido para criar cobrança:", req.body);
 
-    // O payload recebido do frontend já está no formato correto que a Blackcat espera.
-    // Vamos apenas repassá-lo.
+app.post('/criar-cobranca', async (req, res) => {
+    // A lógica interna desta função permanece a mesma, pois o payload está correto.
+    // A única mudança crucial é o `base64Auth` que usamos abaixo.
+    
+    console.log("Backend: Recebido pedido para criar cobrança:", req.body);
     const payload = req.body;
     
-    console.log("Backend: Enviando payload para a Blackcat com autorização Bearer Token...");
+    console.log("Backend: Enviando payload para a Blackcat com autenticação Basic (PublicKey:SecretKey)...");
 
     try {
         const response = await fetch(BLACKCAT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // --- ATUALIZAÇÃO CRUCIAL: Autenticação no formato Bearer Token ---
-                'Authorization': `Bearer ${BLACKCAT_SECRET_KEY}`
+                // Usando a autorização correta agora
+                'authorization': `Basic ${base64Auth}`
             },
             body: JSON.stringify(payload)
         });
@@ -38,12 +44,10 @@ app.post('/criar-cobranca', async (req, res) => {
 
         if (!response.ok) {
             console.error("Backend: Erro retornado pela API Blackcat:", data);
-            // Repassamos a mensagem de erro exata que a Blackcat enviou
-            return res.status(response.status).json({ message: data.message || 'Erro desconhecido do gateway.' });
+            return res.status(response.status).json({ message: data.error || 'Erro desconhecido do gateway.' });
         }
 
         console.log("Backend: Transação criada com sucesso:", data);
-        // A API da Blackcat retorna os dados do PIX dentro de `pix_details`
         res.status(200).json(data);
 
     } catch (error) {

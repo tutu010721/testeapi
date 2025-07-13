@@ -1,15 +1,11 @@
-
-
 {
-  "name": "loja-vans-backend",
+  "name": "testeapi-backend",
   "version": "1.0.0",
-  "description": "Backend para a loja Vans processar pagamentos.",
+  "description": "Backend para a loja processar pagamentos Pague-X",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {

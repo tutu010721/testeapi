@@ -6,31 +6,45 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ===================================================================
-// Suas chaves da Blackcat Pagamentos
 const BLACKCAT_PUBLIC_KEY = "pk_13YJ3DhtaH9ZPBo8eVPqMctGqpHB87NayFcO_j_iKEVfgvCR";
 const BLACKCAT_SECRET_KEY = "sk_Y7izervKtLXqR4hUz6tU1eIMX6T9bWbyrCvHxIAsOerkH7Fe";
 
-// ATUALIZAÇÃO: Endpoint correto para CRIAR TRANSAÇÕES
-const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/transactions";
+const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/payments";
 
-// ATUALIZAÇÃO: Autenticação no formato CORRETO (PublicKey:SecretKey)
 const base64Auth = Buffer.from(`${BLACKCAT_PUBLIC_KEY}:${BLACKCAT_SECRET_KEY}`).toString('base64');
-// ===================================================================
 
 app.post('/criar-cobranca', async (req, res) => {
     console.log("Backend: Recebido pedido para criar cobrança:", req.body);
 
-    // O payload recebido do frontend já está quase no formato correto.
-    // A API de /transactions usa "payment_method" em vez de "payment_type"
+    // ===================================================================
+    // ATUALIZAÇÃO FINAL: Adicionando os campos que faltavam no payload
+    // A API da Blackcat exige a moeda e o endereço completo do cliente.
+    // ===================================================================
     const payload = {
         amount: req.body.amount,
-        payment_method: "pix", // Campo correto para /transactions
-        customer: req.body.customer,
+        payment_method: "pix",
+        currency: "BRL", // Campo de moeda adicionado
+        customer: {
+            name: req.body.customer.name,
+            email: req.body.customer.email,
+            document: {
+                type: "cpf",
+                number: req.body.customer.document
+            },
+            // Endereço do cliente agora é incluído na requisição
+            address: {
+                street: req.body.address.street,
+                number: req.body.address.number,
+                neighborhood: req.body.address.neighborhood,
+                city: req.body.address.city,
+                state: req.body.address.state,
+                zip_code: req.body.address.cep.replace(/\D/g, '') // Apenas números
+            }
+        },
         items: req.body.items
     };
     
-    console.log("Backend: Enviando payload para a Blackcat com autenticação Basic (PublicKey:SecretKey)...");
+    console.log("Backend: Enviando payload FINAL e COMPLETO para a Blackcat:", payload);
 
     try {
         const response = await fetch(BLACKCAT_URL, {
@@ -42,7 +56,18 @@ app.post('/criar-cobranca', async (req, res) => {
             body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        // Verificando se a resposta está vazia ANTES de tentar o .json()
+        const responseText = await response.text();
+        if (!responseText) {
+            console.error("Backend: A API retornou uma resposta vazia.");
+            // Mesmo com corpo vazio, se o status for OK (2xx), consideramos sucesso parcial
+            if (response.ok) {
+                 return res.status(200).json({ message: "Transação criada, mas sem dados de retorno." });
+            }
+            throw new Error("A API retornou uma resposta vazia e um status de erro.");
+        }
+
+        const data = JSON.parse(responseText);
 
         if (!response.ok) {
             console.error("Backend: Erro retornado pela API Blackcat:", data);
@@ -50,8 +75,7 @@ app.post('/criar-cobranca', async (req, res) => {
         }
 
         console.log("Backend: Transação criada com sucesso:", data);
-        // Na resposta, os dados do PIX vêm dentro de 'payment_data'
-        res.status(200).json({ payment_info: data.payment_data });
+        res.status(200).json(data);
 
     } catch (error) {
         console.error("Backend: Erro crítico na função fetch:", error);

@@ -6,45 +6,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Sua chave secreta privada da Pague-X.
-const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
+// ===================================================================
+// ATUALIZAÇÃO: Chave secreta da Blackcat Pagamentos
+const BLACKCAT_SECRET_KEY = "sk_Y7izervKtLXqR4hUz6tU1eIMX6T9bWbyrCvHxIAsOerkH7Fe";
 
-// O endpoint correto para criar transações.
-const PagueX_URL = "https://api.pague-x.com/v1/transactions";
-
-// --- ATUALIZAÇÃO FINAL E CORRETA DA AUTENTICAÇÃO ---
-// Codifica a chave secreta no formato Base64, exatamente como a documentação exige,
-// com os dois-pontos (:) no final antes de codificar.
-// O "Buffer" é uma ferramenta do Node.js para manipular dados.
-const base64Auth = Buffer.from(`${PAGUE_X_SECRET_KEY}:`).toString('base64');
+// ATUALIZAÇÃO: Endpoint correto da Blackcat para criar pagamentos
+const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/payments";
+// ===================================================================
 
 app.post('/criar-cobranca', async (req, res) => {
     console.log("Backend: Recebido pedido para criar cobrança:", req.body);
 
-    const payload = {
-        amount: req.body.amount,
-        payment_type: "pix",
-        customer: {
-            name: req.body.customer.name,
-            email: req.body.customer.email,
-            document: {
-                type: "cpf",
-                number: req.body.customer.document
-            }
-        },
-        items: req.body.items
-    };
+    // O payload recebido do frontend já está no formato correto que a Blackcat espera.
+    // Vamos apenas repassá-lo.
+    const payload = req.body;
     
-    console.log("Backend: Enviando payload para a Pague-X com autorização Basic...");
+    console.log("Backend: Enviando payload para a Blackcat com autorização Bearer Token...");
 
     try {
-        const response = await fetch(PagueX_URL, {
+        const response = await fetch(BLACKCAT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // --- A CORREÇÃO ESTÁ AQUI ---
-                // Enviando o cabeçalho 'authorization' no padrão 'Basic'.
-                'authorization': `Basic ${base64Auth}`
+                // --- ATUALIZAÇÃO CRUCIAL: Autenticação no formato Bearer Token ---
+                'Authorization': `Bearer ${BLACKCAT_SECRET_KEY}`
             },
             body: JSON.stringify(payload)
         });
@@ -52,11 +37,13 @@ app.post('/criar-cobranca', async (req, res) => {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error("Backend: Erro retornado pela API Pague-X:", data);
-            return res.status(response.status).json(data);
+            console.error("Backend: Erro retornado pela API Blackcat:", data);
+            // Repassamos a mensagem de erro exata que a Blackcat enviou
+            return res.status(response.status).json({ message: data.message || 'Erro desconhecido do gateway.' });
         }
 
         console.log("Backend: Transação criada com sucesso:", data);
+        // A API da Blackcat retorna os dados do PIX dentro de `pix_details`
         res.status(200).json(data);
 
     } catch (error) {

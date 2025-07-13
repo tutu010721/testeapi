@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function gerarCobrancaPix(payload) {
         const SUA_CHAVE_API = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
-        const url = "http://localhost:3000/criar-cobranca";
+        const url = "https://testeapi-frqn.onrender.com//criar-cobranca";
         try {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();

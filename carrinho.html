@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumo do Pedido</title>
     <style>
-        /* O CSS permanece 100% o mesmo da versão anterior */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         :root {
             --tiktok-red: #FE2C55; --text-primary: #161823; --text-secondary: #5C5E67;
@@ -71,7 +70,6 @@
         .pix-modal-content h2 { font-size: 18px; margin-top: 8px; margin-bottom: 8px; }
         .pix-modal-content p { color: var(--text-secondary); margin-bottom: 24px; font-size: 15px; line-height: 1.5; }
         .pix-modal-close-btn { position: absolute; top: 16px; right: 16px; cursor: pointer; color: var(--text-tertiary); }
-        #pix-qrcode { width: 200px; height: 200px; margin: 0 auto; display: block; background-color: var(--border-color); object-fit: contain; }
         .pix-code-block { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; margin-top: 16px; margin-bottom: 24px; }
         .pix-code-text { font-family: 'Courier New', Courier, monospace; font-size: 14px; color: var(--text-secondary); word-wrap: break-word; text-align: left; margin-bottom: 12px; }
         .copy-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: 25px; border: 1.5px solid var(--tiktok-red); background-color: #FFF2F4; color: var(--tiktok-red); font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
@@ -92,20 +90,14 @@
     </header>
 
     <main>
-        <div class="info-button-wrapper" id="address-container">
-            </div>
-
-        <section class="card-section" id="cart-item-container">
-            <p style="color: var(--text-tertiary);">Seu carrinho está vazio.</p>
-        </section>
-        
+        <div class="info-button-wrapper" id="address-container"></div>
+        <section class="card-section" id="cart-item-container"><p style="color: var(--text-tertiary);">Seu carrinho está vazio.</p></section>
         <section class="card-section">
             <h2>Resumo do pedido</h2>
             <div class="summary-row"><span class="label">Subtotal</span><span id="subtotal-amount">R$ 0,00</span></div>
             <div class="summary-row total"><span class="label">Total</span><span id="total-amount">R$ 0,00</span></div>
             <p class="tax-info">Impostos inclusos</p>
         </section>
-
         <section class="card-section payment-method">
             <h2>Forma de pagamento</h2>
             <div class="payment-option">
@@ -191,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pixCloseBtn = document.getElementById('pix-modal-close-btn');
     const pixCodeDisplayText = document.getElementById('pix-code-text-display');
     const copyPixCodeBtn = document.getElementById('copy-pix-code-btn');
+    const copyBtnText = document.getElementById('copy-btn-text');
     let pixCodeToCopy = "";
 
     // --- FUNÇÕES DE VALIDAÇÃO E BUSCA ---
@@ -236,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const openPixModal = () => { pixOverlay.classList.add('visible'); pixModal.classList.add('visible'); };
     const closePixModal = () => { pixOverlay.classList.remove('visible'); pixModal.classList.remove('visible'); };
 
+    // --- LÓGICA DE CARREGAMENTO E EXIBIÇÃO DE DADOS ---
     function loadCartData() {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) {
@@ -265,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('add-address-btn').addEventListener('click', openAddressPage);
     }
     
-    // --- FUNÇÃO DE CHAMADA À API ---
     async function gerarCobrancaPix(payload) {
         const url = "https://testeapi-frqn.onrender.com/criar-cobranca";
         try {
@@ -279,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- EVENT LISTENERS (OUVINTES DE EVENTOS) ---
+    // --- EVENT LISTENERS ---
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);
     pixCloseBtn.addEventListener('click', closePixModal);
@@ -288,14 +281,12 @@ document.addEventListener('DOMContentLoaded', () => {
     copyPixCodeBtn.addEventListener('click', () => {
         if (pixCodeToCopy) {
             navigator.clipboard.writeText(pixCodeToCopy).then(() => {
-                const copyBtnSpan = copyPixCodeBtn.querySelector('span');
-                copyBtnSpan.textContent = 'Copiado!';
+                copyBtnText.textContent = 'Copiado!';
                 copyPixCodeBtn.style.backgroundColor = '#E0F8F4';
                 copyPixCodeBtn.style.borderColor = '#32BCAD';
                 copyPixCodeBtn.style.color = '#32BCAD';
-
                 setTimeout(() => {
-                    copyBtnSpan.textContent = 'Copiar código Pix';
+                    copyBtnText.textContent = 'Copiar código Pix';
                     copyPixCodeBtn.style.backgroundColor = '#FFF2F4';
                     copyPixCodeBtn.style.borderColor = 'var(--tiktok-red)';
                     copyPixCodeBtn.style.color = 'var(--tiktok-red)';
@@ -339,10 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: address.fullName,
                 email: address.email,
                 phone: address.phone.replace(/[^\d]+/g, ''),
-                document: {
-                    type: "cpf",
-                    number: address.cpf.replace(/[^\d]+/g, '')
-                },
+                document: { type: "cpf", number: address.cpf.replace(/[^\d]+/g, '') },
                 address: {
                     street: address.street,
                     streetNumber: address.number,
@@ -366,25 +354,15 @@ document.addEventListener('DOMContentLoaded', () => {
         placeOrderButton.disabled = true;
         try {
             const response = await gerarCobrancaPix(payload);
-            const paymentData = response.pix || response.payment_data; // Tenta os dois nomes comuns para o objeto do PIX
+            const paymentData = response.pix || response;
 
             if (paymentData && paymentData.qrcode) {
-                // CORREÇÃO FINAL: A API pode retornar 'image' ou 'qrcode_image_url'
-                const imageUrl = paymentData.qrcode_image_url || paymentData.image; 
-                
-                if (imageUrl) {
-                    pixQrCodeImg.src = imageUrl;
-                } else {
-                    console.error("URL da imagem do QR Code não encontrada na resposta da API:", paymentData);
-                    pixQrCodeImg.style.display = 'none'; // Esconde a imagem quebrada
-                }
-                
                 pixCodeToCopy = paymentData.qrcode;
                 pixCodeDisplayText.textContent = paymentData.qrcode;
                 openPixModal();
             } else { 
                 console.error("Resposta da API incompleta:", response);
-                throw new Error(response.message || "Resposta da API não contém as informações do Pix esperadas."); 
+                throw new Error(response.message || "A resposta da API não contém as informações do Pix."); 
             }
         } catch (error) {
             alert(`Ocorreu um erro ao gerar a cobrança: ${error.message}`);

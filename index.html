@@ -26,9 +26,11 @@
         .product-title { font-size: 16px; font-weight: 600; line-height: 1.5; margin-top: 12px; }
         .product-meta-info { font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
         .product-stats { display: flex; align-items: center; gap: 8px; }
-        .product-stats .star-icon { width: 16px; height: 16px; }
-        .product-stats .star-icon.filled { fill: var(--star-yellow); }
-        .product-stats .star-icon.half-filled { fill: url(#half-star-gradient); }
+        .product-stats .rating-value { font-weight: 600; color: var(--text-primary); }
+        .product-stats .rating-stars { display: flex; gap: 2px; }
+        .product-stats .rating-stars .star-icon { width: 16px; height: 16px; }
+        .product-stats .rating-stars .star-icon.filled { fill: var(--star-yellow); }
+        .product-stats .rating-stars .star-icon.half-filled { fill: url(#half-star-gradient); }
         .divider { border-left: 1px solid var(--border-color); height: 12px; }
         .flash-deal-section { background-color: var(--orange-bg); color: var(--orange-text); padding: 12px 16px; }
         .price-line { display: flex; align-items: baseline; gap: 10px; }
@@ -65,6 +67,13 @@
         .review-images { display: flex; gap: 8px; overflow-x: auto; }
         .review-images img { width: 72px; height: 72px; border-radius: 4px; object-fit: cover; }
         .review-date { font-size: 12px; color: var(--text-tertiary); margin-top: 12px; }
+        .about-shop-section { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .shop-avatar { width: 100px; height: auto; }
+        .shop-name { font-size: 15px; font-weight: 600; }
+        .product-description-section { padding: 16px; }
+        .product-description-section h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px 0; }
+        .product-description-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+        .product-description-image { width: 100%; border-radius: 4px; display: block; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-container { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-primary); z-index: 1001; border-radius: 16px 16px 0 0; padding: 16px; transform: translateY(100%); transition: transform 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
@@ -124,14 +133,8 @@
             <h1 class="product-title">Tênis KNU Skate Casual Resistente Macio e Leve Frete Rápido</h1>
             <div class="product-meta-info">
                 <div class="product-stats">
-                    <span class="rating-value">4.8</span>
-                    <div class="rating-stars">
-                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                        <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                        <svg class="star-icon half-filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                    </div>
+                    <span class="rating-value">4.3</span>
+                    <svg class="star-icon filled" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                     <span>(119)</span>
                     <div class="divider"></div>
                     <span>2.3K vendido</span>
@@ -150,7 +153,7 @@
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                     <div class="text-group">
                         <span class="main-text">Frete grátis</span>
-                        <span class="sub-text">Receba até 17 de jul - 18 de jul</span>
+                        <span class="sub-text">Receba até 17 de Jul - 18 de Jul</span>
                     </div>
                 </div>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -171,31 +174,31 @@
             <div class="review-card">
                 <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Avatar"><span>m***3</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
                 <div class="review-item-details">Item: KNU, 37</div><p class="review-text">entrega rápido, bom pelo preço super indico</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/c65a5cc2c77542d19bef84eebc618230~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 1"></div>
+                <div class="review-images"><img src="https://i.imgur.com/GjNChE0.png" alt="Foto da avaliação 1"></div>
                 <div class="review-date">há 4 dias</div>
             </div>
             <div class="review-card">
                 <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/men/7.jpg" alt="Avatar"><span>L***a</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
                 <div class="review-item-details">Item: KNU, 38</div><p class="review-text">Veio no tamanho certo e confortável e não demorou pra entregar</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/1601f4f147d94c529308ca4dd5c9da41~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 2"></div>
+                <div class="review-images"><img src="https://i.imgur.com/u7f3bYV.png" alt="Foto da avaliação 2"></div>
                 <div class="review-date">há 1 semana</div>
             </div>
             <div class="review-card">
                 <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/9.jpg" alt="Avatar"><span>A***e</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
                 <div class="review-item-details">Item: KNU, 40</div><p class="review-text">Eu ameiiiiiiii lindo mesmo! Comprei ele na promoção</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/d70ba8de99cd48af8e19982edc856989~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 3"></div>
+                <div class="review-images"><img src="https://i.imgur.com/KxP1h3W.png" alt="Foto da avaliação 3"></div>
                 <div class="review-date">há 1 semana</div>
             </div>
             <div class="review-card">
                 <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/men/12.jpg" alt="Avatar"><span>P***a</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
                 <div class="review-item-details">Item: KNU, 38</div><p class="review-text">Muito estiloso, cadarço grosso como no anúncio. Recomendo!</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/80bce918de7144bf88d173d66685aea3~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 4"></div>
+                <div class="review-images"><img src="https://i.imgur.com/K3wSszG.png" alt="Foto da avaliação 4"></div>
                 <div class="review-date">há 2 semanas</div>
             </div>
             <div class="review-card">
                 <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/14.jpg" alt="Avatar"><span>J***e</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24" fill="var(--border-color)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
                 <div class="review-item-details">Item: KNU, 39</div><p class="review-text">É bonito, mas a forma é um pouco pequena. Aconselho pegar um número maior.</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/79856a06bad04ddd8ab423bed9ceedb8~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 5"></div>
+                <div class="review-images"><img src="https://i.imgur.com/8x8SzkC.png" alt="Foto da avaliação 5"></div>
                 <div class="review-date">há 3 semanas</div>
             </div>
         </section>
@@ -212,9 +215,11 @@
             <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/84d99d5f4d2f433d88046ba439244c26~tplv-aphluv4xwc-resize-webp:800:708.webp" alt="Tabela de Medidas" class="product-description-image">
         </section>
     </main>
+
     <footer class="action-footer">
         <button class="footer-btn" id="buy-now-button">Comprar agora</button>
     </footer>
+
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="modal-container">
         <div class="modal-header">
@@ -241,25 +246,13 @@
         </div>
         <button id="modal-confirm-btn">Confirmar</button>
     </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    
     const carouselSlider = document.querySelector('.carousel-slider');
     const paginationContainer = document.querySelector('.carousel-pagination');
-    const imageUrls = [
-        "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e42d80beacec4087bb1a7172ed6fe5dc~tplv-aphluv4xwc-resize-webp:800:800.webp",
-        "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/74324eb384ec477b8eccea8910a7b5ee~tplv-aphluv4xwc-resize-webp:800:800.webp",
-        "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/4b934462da28482896f515ca9f775dc7~tplv-aphluv4xwc-resize-webp:800:800.webp",
-        "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/be1b71d95e7a486e99dd6de7ff1cf5ec~tplv-aphluv4xwc-resize-webp:800:800.webp",
-        "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/cda42dc025594355aaaad9fb3a6b8286~tplv-aphluv4xwc-resize-webp:800:800.webp",
-        "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/91cd95d3d0ae48d081c3289149208fa2~tplv-aphluv4xwc-resize-webp:800:800.webp",
-        "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/ea3aa7d877a94a158585c88815906412~tplv-aphluv4xwc-resize-webp:800:800.webp"
-    ];
-    imageUrls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        carouselSlider.appendChild(img);
-    });
-
+    
     const images = carouselSlider.querySelectorAll('img');
     const imageCount = images.length;
     let currentIndex = 0;
@@ -297,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = () => { overlay.classList.remove('visible'); modalContainer.classList.remove('visible'); };
     
     const updateQuantity = (newQuantity) => {
-        if(newQuantity > 0) {
+        if(newQuantity > 0) { 
             quantity = newQuantity;
             quantityValueSpan.textContent = quantity;
             decreaseQtyBtn.disabled = (quantity === 1);

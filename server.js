@@ -14,7 +14,7 @@ app.use(express.json());
 
 // ===================================================================
 // SUAS CHAVES DA PAGUE-X
-const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZ";
+const PAGUE_X_SECRET_KEY = "sk_live_v24TJSZGAPap65GseGo9KYzsW0mlNdjonkDHF7aRnX";
 
 // ENDPOINT CORRETO
 const PAGUE_X_URL = "https://api.pague-x.com/v1/transactions";

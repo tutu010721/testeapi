@@ -17,7 +17,7 @@
         main { padding-bottom: 80px; }
         .icon { width: 24px; height: 24px; stroke-width: 2; color: var(--text-tertiary); flex-shrink: 0; }
         .carousel-container { position: relative; width: 100%; overflow: hidden; aspect-ratio: 1/1; }
-        .carousel-slider { height: 100%; display: flex; transition: transform 0.4s ease-in-out; }
+        .carousel-slider { height: 100%; display: flex; transition: transform 0.4s ease-in-out; touch-action: pan-y; }
         .carousel-slider img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
         .carousel-pagination { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
         .pagination-dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.6); }
@@ -99,7 +99,6 @@
 </head>
 <body>
     <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="half-star-gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="50%" stop-color="var(--star-yellow)" /><stop offset="50%" stop-color="var(--border-color)" /></linearGradient></defs></svg>
-
     <main>
         <section class="carousel-container" id="product-carousel">
             <div class="carousel-slider">
@@ -257,10 +256,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const carouselSlider = document.querySelector('.carousel-slider');
     const paginationContainer = document.querySelector('.carousel-pagination');
-    
     const images = carouselSlider.querySelectorAll('img');
     const imageCount = images.length;
     let currentIndex = 0;
+    
+    // CORREÇÃO: Touch events para o carrossel
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carouselSlider.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    carouselSlider.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        if (touchEndX < touchStartX) {
+            // Swipe left
+            goToSlide(currentIndex + 1);
+        }
+        if (touchEndX > touchStartX) {
+            // Swipe right
+            goToSlide(currentIndex - 1);
+        }
+    }
+    
     if (imageCount > 0) {
         for (let i = 0; i < imageCount; i++) {
             const dot = document.createElement('div');
@@ -270,8 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const paginationDots = paginationContainer.querySelectorAll('.pagination-dot');
         const goToSlide = (index) => {
+            if (index < 0) index = imageCount - 1;
+            if (index >= imageCount) index = 0;
+            
             currentIndex = index;
-            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+            carouselSlider.style.transform = `translateX(-${currentIndex * 100}%)`;
             paginationDots.forEach(d => d.classList.remove('active'));
             paginationDots[currentIndex].classList.add('active');
         };

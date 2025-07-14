@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumo do Pedido</title>
     <style>
-        /* O CSS permanece 100% o mesmo */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         :root {
             --tiktok-red: #FE2C55; --text-primary: #161823; --text-secondary: #5C5E67;
@@ -89,6 +88,7 @@
         </div>
         <p class="secure-checkout-banner"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Finalização da compra segura garantida</p>
     </header>
+
     <main>
         <div class="info-button-wrapper" id="address-container"></div>
         <section class="card-section" id="cart-item-container"><p style="color: var(--text-tertiary);">Seu carrinho está vazio.</p></section>
@@ -106,6 +106,7 @@
             </div>
         </section>
     </main>
+
     <footer>
         <div class="footer-total">
             <span class="total-label" id="footer-total-label">Total (0 itens)</span>
@@ -113,6 +114,7 @@
         </div>
         <button class="footer-button" id="place-order-button">Fazer pedido</button>
     </footer>
+
     <div class="address-page" id="address-page">
         <header>
             <div class="header-top">
@@ -162,7 +164,7 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- SELETORES DE ELEMENTOS ---
+    // Todos os seletores de elementos
     const cartContainer = document.getElementById('cart-item-container');
     const subtotalAmount = document.getElementById('subtotal-amount');
     const totalAmount = document.getElementById('total-amount');
@@ -183,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyBtnText = document.getElementById('copy-btn-text');
     let pixCodeToCopy = "";
 
-    // --- FUNÇÕES DE VALIDAÇÃO E BUSCA ---
+    // Funções de validação e busca...
     function validaCPF(cpf) {
         cpf = String(cpf).replace(/[^\d]+/g, '');
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
@@ -199,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (resto !== parseInt(cpf.substring(10, 11))) return false;
         return true;
     }
-
     async function buscaCEP() {
         const cep = cepInput.value.replace(/\D/g, '');
         if (cep.length !== 8) return;
@@ -220,13 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- FUNÇÕES DE UI (INTERFACE DO USUÁRIO) ---
+    // Funções de UI
     const openAddressPage = () => addressPage.classList.add('visible');
     const closeAddressPage = () => addressPage.classList.remove('visible');
     const openPixModal = () => { pixOverlay.classList.add('visible'); pixModal.classList.add('visible'); };
     const closePixModal = () => { pixOverlay.classList.remove('visible'); pixModal.classList.remove('visible'); };
 
-    // --- LÓGICA DE CARREGAMENTO E EXIBIÇÃO DE DADOS ---
+    // Lógica de carregamento de dados
     function loadCartData() {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) {
@@ -256,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('add-address-btn').addEventListener('click', openAddressPage);
     }
     
+    // Chamada à API
     async function gerarCobrancaPix(payload) {
         const url = "https://testeapi-frqn.onrender.com/criar-cobranca";
         try {
@@ -269,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- EVENT LISTENERS ---
+    // Event Listeners
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);
     pixCloseBtn.addEventListener('click', closePixModal);
@@ -320,6 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cartItem = JSON.parse(cartItemJSON);
         const address = JSON.parse(addressJSON);
         
+        // --- ATUALIZAÇÃO FINAL NO PAYLOAD ---
         const payload = {
             amount: Math.round(parseFloat(cartItem.price) * 100 * cartItem.quantity),
             paymentMethod: "pix",

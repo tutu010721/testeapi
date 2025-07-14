@@ -12,17 +12,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Suas chaves da Blackcat Pagamentos
-const BLACKCAT_PUBLIC_KEY = "pk_live_v2BhOFVtdZnnvWDSR9w6YyCuMjNV4Ig66H";
-const BLACKCAT_SECRET_KEY = "sk_live_v24TJSZGAPap65GseGo9KYzsW0mlNdjonkDHF7aRnX";
-
 // ===================================================================
-// CORREÇÃO FINAL: Usando a variável correta que definimos acima.
-const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/transactions";
-// ===================================================================
+// SUAS CHAVES DA PAGUE-X
+const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZ";
 
-// Autenticação no formato CORRETO (PublicKey:SecretKey)
-const base64Auth = Buffer.from(`${BLACKCAT_PUBLIC_KEY}:${BLACKCAT_SECRET_KEY}`).toString('base64');
+// ENDPOINT CORRETO
+const PAGUE_X_URL = "https://api.pague-x.com/v1/transactions";
+
+// AUTENTICAÇÃO CORRETA (Basic Auth com {SECRET_KEY}:x)
+const base64Auth = Buffer.from(`${PAGUE_X_SECRET_KEY}:x`).toString('base64');
+// ===================================================================
 
 // Rota de verificação para sabermos que o servidor está no ar
 app.get('/', (req, res) => {
@@ -33,11 +32,10 @@ app.post('/criar-cobranca', async (req, res) => {
     const payload = req.body;
     console.log("Backend: Recebido pedido para criar cobrança. Payload:", JSON.stringify(payload, null, 2));
     
-    console.log("Backend: Enviando payload para a Blackcat com autenticação Basic (PublicKey:SecretKey)...");
+    console.log("Backend: Enviando payload para a Pague-X com autenticação Basic...");
 
     try {
-        // CORREÇÃO: Usando a variável BLACKCAT_URL
-        const response = await fetch(BLACKCAT_URL, {
+        const response = await fetch(PAGUE_X_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,7 +47,7 @@ app.post('/criar-cobranca', async (req, res) => {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error("Backend: Erro retornado pela API Blackcat:", data);
+            console.error("Backend: Erro retornado pela API Pague-X:", data);
             return res.status(response.status).json(data);
         }
 

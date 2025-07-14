@@ -13,7 +13,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // ===================================================================
-// SUAS NOVAS CHAVES - Pague-X
+// SUAS CHAVES CORRETAS - Pague-X
 const PAGUE_X_PUBLIC_KEY = "pk_live_v2BhOFVtdZnnvWDSR9w6YyCuMjNV4Ig66H";
 const PAGUE_X_SECRET_KEY = "sk_live_v24TJSZGAPap65GseGo9KYzsW0mlNdjonkDHF7aRnX";
 
@@ -33,8 +33,6 @@ app.post('/criar-cobranca', async (req, res) => {
     const payload = req.body;
     console.log("Backend: Recebido pedido para criar cobrança. Payload:", JSON.stringify(payload, null, 2));
     
-    console.log("Backend: Enviando payload para a Pague-X com autorização Basic...");
-
     try {
         const response = await fetch(PagueX_URL, {
             method: 'POST',

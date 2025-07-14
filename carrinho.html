@@ -268,6 +268,21 @@ document.addEventListener('DOMContentLoaded', () => {
         loadCartData(); // Recarrega os dados do carrinho para atualizar a tela
     }
 
+    // COLE ESTA FUNÇÃO DENTRO DO SEU SCRIPT
+function updateCartQuantity(change) {
+    const produtoJSON = localStorage.getItem('cartItem');
+    if (!produtoJSON) return;
+    
+    let produto = JSON.parse(produtoJSON);
+    let newQuantity = produto.quantity + change;
+
+    if (newQuantity >= 1) { // Garante que a quantidade não seja menor que 1
+        produto.quantity = newQuantity;
+        localStorage.setItem('cartItem', JSON.stringify(produto));
+        loadCartData(); // Recarrega os dados do carrinho para atualizar toda a tela
+    }
+}
+
     function loadUserData() {
         const savedAddressJSON = localStorage.getItem('user_address');
         if (savedAddressJSON) {

@@ -4,38 +4,39 @@ const fetch = require('node-fetch');
 
 const app = express();
 
-// ===================================================================
-// ATUALIZAÇÃO FINAL: Configuração explícita do CORS
-// Estamos dizendo ao nosso backend para aceitar requisições vindas
-// do seu site hospedado no Vercel.
+// Configuração do CORS para permitir requisições do seu frontend no Vercel
 const corsOptions = {
   origin: 'https://testeapi-two.vercel.app',
-  optionsSuccessStatus: 200 // Para navegadores mais antigos
+  optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
-// ===================================================================
-
 app.use(express.json());
 
-const BLACKCAT_PUBLIC_KEY = "pk_13YJ3DhtaH9ZPBo8eVPqMctGqpHB87NayFcO_j_iKEVfgvCR";
-const BLACKCAT_SECRET_KEY = "sk_Y7izervKtLXqR4hUz6tU1eIMX6T9bWbyrCvHxIAsOerkH7Fe";
-const BLACKCAT_URL = "https://api.blackcatpagamentos.com/v1/transactions";
+// ===================================================================
+// SUAS NOVAS CHAVES - Pague-X
+const PAGUE_X_PUBLIC_KEY = "pk_live_v2BhOFVtdZnnvWDSR9w6YyCuMjNV4Ig66H";
+const PAGUE_X_SECRET_KEY = "sk_live_v24TJSZGAPap65GseGo9KYzsW0mlNdjonkDHF7aRnX";
 
-const base64Auth = Buffer.from(`${BLACKCAT_PUBLIC_KEY}:${BLACKCAT_SECRET_KEY}`).toString('base64');
+// ENDPOINT CORRETO
+const PAGUE_X_URL = "https://api.pague-x.com/v1/transactions";
+
+// AUTENTICAÇÃO CORRETA (Basic Auth com PublicKey:SecretKey)
+const base64Auth = Buffer.from(`${PAGUE_X_PUBLIC_KEY}:${PAGUE_X_SECRET_KEY}`).toString('base64');
+// ===================================================================
 
 // Rota de verificação para sabermos que o servidor está no ar
 app.get('/', (req, res) => {
-    res.send('Servidor da loja está online!');
+    res.send('Servidor da loja está online e pronto para receber pedidos!');
 });
 
 app.post('/criar-cobranca', async (req, res) => {
-    console.log("Backend: Recebido pedido para criar cobrança:", req.body);
     const payload = req.body;
+    console.log("Backend: Recebido pedido para criar cobrança. Payload:", JSON.stringify(payload, null, 2));
     
-    console.log("Backend: Enviando payload para a Blackcat com autorização Basic (PublicKey:SecretKey)...");
+    console.log("Backend: Enviando payload para a Pague-X com autorização Basic...");
 
     try {
-        const response = await fetch(BLACKCAT_URL, {
+        const response = await fetch(PagueX_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,8 +48,8 @@ app.post('/criar-cobranca', async (req, res) => {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error("Backend: Erro retornado pela API Blackcat:", data);
-            return res.status(response.status).json({ message: data.error || 'Erro desconhecido do gateway.' });
+            console.error("Backend: Erro retornado pela API Pague-X:", data);
+            return res.status(response.status).json(data);
         }
 
         console.log("Backend: Transação criada com sucesso:", data);

@@ -38,6 +38,7 @@
         .product-price-quantity .price { font-weight: 600; font-size: 16px; }
         .quantity-controls { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 4px; }
         .quantity-btn { border: none; background: none; font-size: 20px; width: 30px; height: 30px; cursor: pointer; color: var(--text-primary); }
+        .quantity-btn:disabled { color: #ccc; cursor: not-allowed; }
         .quantity-value { font-size: 15px; font-weight: 600; padding: 0 12px; }
         .summary-row { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 12px; }
         .summary-row.total { font-weight: 600; }
@@ -240,11 +241,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const produto = JSON.parse(produtoJSON);
         const total = parseFloat(produto.price) * produto.quantity;
         const totalFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
-        cartContainer.innerHTML = `<div class="shop-header"><span class="shop-name">${produto.seller}</span><span class="add-note">Adicionar nota ></span></div><div class="product-item"><img src="${produto.image}" alt="${produto.name}"><div class="product-info"><div class="product-title">${produto.name}</div><div class="product-variant">${produto.variant}</div><div class="return-policy">Devoluções gratuitas em 30 dias</div><div class="product-price-quantity"><span class="price">${totalFormatado}</span><div class="quantity-controls"><button class="quantity-btn">&minus;</button><span class="quantity-value">${produto.quantity}</span><button class="quantity-btn">&plus;</button></div></div></div></div>`;
+        cartContainer.innerHTML = `<div class="shop-header"><span class="shop-name">${produto.seller}</span><span class="add-note">Adicionar nota ></span></div><div class="product-item"><img src="${produto.image}" alt="${produto.name}"><div class="product-info"><div class="product-title">${produto.name}</div><div class="product-variant">${produto.variant}</div><div class="return-policy">Devoluções gratuitas em 30 dias</div><div class="product-price-quantity"><span class="price">${totalFormatado}</span><div class="quantity-controls"><button class="quantity-btn" id="decrease-cart-qty">&minus;</button><span class="quantity-value" id="cart-qty-value">${produto.quantity}</span><button class="quantity-btn" id="increase-cart-qty">&plus;</button></div></div></div></div>`;
         subtotalAmount.textContent = totalFormatado;
         totalAmount.textContent = totalFormatado;
         footerTotalLabel.textContent = `Total (${produto.quantity} item)`;
         footerTotalAmount.textContent = totalFormatado;
+
+        // Adiciona listeners aos botões de quantidade do carrinho
+        document.getElementById('increase-cart-qty').addEventListener('click', () => updateCartQuantity(1));
+        document.getElementById('decrease-cart-qty').addEventListener('click', () => updateCartQuantity(-1));
+    }
+
+    function updateCartQuantity(change) {
+        const produtoJSON = localStorage.getItem('cartItem');
+        if (!produtoJSON) return;
+        
+        let produto = JSON.parse(produtoJSON);
+        let newQuantity = produto.quantity + change;
+
+        if (newQuantity < 1) {
+            newQuantity = 1; // Não permite quantidade menor que 1
+        }
+        
+        produto.quantity = newQuantity;
+        localStorage.setItem('cartItem', JSON.stringify(produto));
+        loadCartData(); // Recarrega os dados do carrinho para atualizar a tela
     }
 
     function loadUserData() {
@@ -258,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('add-address-btn').addEventListener('click', openAddressPage);
     }
     
+    // --- FUNÇÃO DE CHAMADA À API ---
     async function gerarCobrancaPix(payload) {
         const url = "https://testeapi-frqn.onrender.com/criar-cobranca";
         try {
@@ -322,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const cartItem = JSON.parse(cartItemJSON);
         const address = JSON.parse(addressJSON);
         
-        // --- Montando o payload CORRETO para a API ---
         const payload = {
             amount: Math.round(parseFloat(cartItem.price) * 100 * cartItem.quantity),
             paymentMethod: "pix",
@@ -357,8 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
         placeOrderButton.disabled = true;
         try {
             const response = await gerarCobrancaPix(payload);
-            
-            // A resposta da Pague-X para PIX vem dentro do objeto `pix`
             const paymentData = response.pix;
 
             if (paymentData && paymentData.qrcode) {

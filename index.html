@@ -15,42 +15,38 @@
         }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg-secondary); color: var(--text-primary); }
         main { padding-top: 60px; padding-bottom: 80px; }
-        .icon { width: 24px; height: 24px; stroke-width: 2; color: var(--text-tertiary); flex-shrink: 0; }
+        .icon { width: 24px; height: 24px; stroke-width: 2; color: var(--text-primary); flex-shrink: 0; }
         
-        /* ATUALIZAÇÃO: Estilo do novo cabeçalho */
+        /* NOVO CABEÇALHO */
         header.main-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 8px 16px;
-            height: 44px;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 16px; height: 44px;
             background-color: var(--bg-primary);
             border-bottom: 1px solid var(--border-color);
         }
-        .header-icon {
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-        .header-icons-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .header-title { font-weight: 600; font-size: 17px; }
+        .header-icons-right { display: flex; align-items: center; gap: 20px; }
 
+        /* CARROSSEL COM SETAS */
         .carousel-container { position: relative; width: 100%; overflow: hidden; aspect-ratio: 1/1; }
         .carousel-slider { height: 100%; display: flex; transition: transform 0.4s ease-in-out; touch-action: pan-y; }
         .carousel-slider img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none; border-radius: 50%;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10;
+        }
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+        .carousel-btn .icon { width: 20px; height: 20px; }
         .carousel-pagination { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
         .pagination-dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.6); }
         .pagination-dot.active { background-color: var(--bg-primary); }
+
         .content-section { background-color: var(--bg-primary); margin-bottom: 8px; padding: 16px; }
         .product-title { font-size: 16px; font-weight: 600; line-height: 1.5; margin-top: 12px; }
         .product-meta-info { font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
@@ -96,13 +92,6 @@
         .review-images { display: flex; gap: 8px; overflow-x: auto; }
         .review-images img { width: 72px; height: 72px; border-radius: 4px; object-fit: cover; }
         .review-date { font-size: 12px; color: var(--text-tertiary); margin-top: 12px; }
-        .about-shop-section { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .shop-avatar { width: 100px; height: auto; }
-        .shop-name { font-size: 15px; font-weight: 600; }
-        .product-description-section { padding: 16px; }
-        .product-description-section h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px 0; }
-        .product-description-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
-        .product-description-image { width: 100%; border-radius: 4px; display: block; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-container { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-primary); z-index: 1001; border-radius: 16px 16px 0 0; padding: 16px; transform: translateY(100%); transition: transform 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
@@ -111,6 +100,7 @@
         .modal-product-img { width: 80px; height: 80px; border-radius: 4px; }
         .modal-close-btn { position: absolute; top: 0; right: 0; cursor: pointer; width: 28px; height: 28px; }
         .modal-section { padding: 16px 0; border-bottom: 1px solid var(--border-color); }
+        .modal-section:last-of-type { border-bottom: none; }
         .modal-section h3 { font-size: 15px; margin: 0 0 12px 0; }
         .size-options { display: flex; flex-wrap: wrap; gap: 10px; }
         .size-btn { padding: 8px 16px; border: 1px solid var(--border-color); background-color: var(--bg-secondary); border-radius: 4px; cursor: pointer; font-weight: 500; }
@@ -131,20 +121,19 @@
 
     <header class="main-header">
         <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span class="header-title">paccshop.com</span>
         <div class="header-icons-right">
-            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19a8 8 0 100-16 8 8 0 000 16z"/><path d="M21 21l-4.35-4.35"/></svg>
-            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
         </div>
     </header>
 
     <main>
         <section class="carousel-container" id="product-carousel">
             <div class="carousel-slider">
-                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104245_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 1">
-                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104255_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 2">
-                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104304_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 3">
-                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104327_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 4">
-            </div>
+                </div>
+            <button class="carousel-btn prev" id="prev-btn"><svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+            <button class="carousel-btn next" id="next-btn"><svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
             <div class="carousel-pagination"></div>
         </section>
         
@@ -184,7 +173,7 @@
 
         <section class="content-section clickable-section" id="open-modal-btn">
             <div class="left-content"><span class="main-text">Selecionar opções</span></div>
-            <div class="right-content subtle"><span>Select</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+            <div class="right-content subtle"><span>Selecione</span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
         </section>
 
         <section class="content-section shipping-info-section">
@@ -193,7 +182,7 @@
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                     <div class="text-group">
                         <span class="main-text">Frete grátis</span>
-                        <span class="sub-text">Receba até 17 de Jul - 18 de Jul</span>
+                        <span class="sub-text">Receba até 17 de jul - 18 de jul</span>
                     </div>
                 </div>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -211,50 +200,10 @@
         
         <section class="content-section">
             <div class="reviews-section-header clickable-section"><h2>Avaliações (119)</h2><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
-            <div class="review-card">
-                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Avatar"><span>m***3</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
-                <div class="review-item-details">Item: KNU, 37</div><p class="review-text">entrega rápido, bom pelo preço super indico</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/c65a5cc2c77542d19bef84eebc618230~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 1"></div>
-                <div class="review-date">há 4 dias</div>
-            </div>
-            <div class="review-card">
-                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/men/7.jpg" alt="Avatar"><span>L***a</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
-                <div class="review-item-details">Item: KNU, 38</div><p class="review-text">Veio no tamanho certo e confortável e não demorou pra entregar</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/1601f4f147d94c529308ca4dd5c9da41~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 2"></div>
-                <div class="review-date">há 1 semana</div>
-            </div>
-            <div class="review-card">
-                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/9.jpg" alt="Avatar"><span>A***e</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
-                <div class="review-item-details">Item: KNU, 40</div><p class="review-text">Eu ameiiiiiiii lindo mesmo! Comprei ele na promoção</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/d70ba8de99cd48af8e19982edc856989~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 3"></div>
-                <div class="review-date">há 1 semana</div>
-            </div>
-            <div class="review-card">
-                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/men/12.jpg" alt="Avatar"><span>P***a</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
-                <div class="review-item-details">Item: KNU, 38</div><p class="review-text">Muito estiloso, cadarço grosso como no anúncio. Recomendo!</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/80bce918de7144bf88d173d66685aea3~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 4"></div>
-                <div class="review-date">há 2 semanas</div>
-            </div>
-            <div class="review-card">
-                <div class="review-author"><div class="review-author-info"><img src="https://randomuser.me/api/portraits/women/14.jpg" alt="Avatar"><span>J***e</span></div><div class="review-stars"><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><svg class="star-icon" viewBox="0 0 24 24" fill="var(--border-color)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div></div>
-                <div class="review-item-details">Item: KNU, 39</div><p class="review-text">É bonito, mas a forma é um pouco pequena. Aconselho pegar um número maior.</p>
-                <div class="review-images"><img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/79856a06bad04ddd8ab423bed9ceedb8~tplv-aphluv4xwc-resize-jpeg:350:350.jpeg" alt="Foto da avaliação 5"></div>
-                <div class="review-date">há 3 semanas</div>
-            </div>
-        </section>
-        <section class="about-shop-section">
-            <img src="https://logos-world.net/wp-content/uploads/2020/05/Vans-Logo-1966.png" alt="Logo da loja" class="shop-avatar">
-            <span class="shop-name">Vans</span>
-        </section>
-        <section class="product-description-section">
-            <h2>Descrição do produto</h2>
-            <p class="product-description-text">
-                O Tênis Knu Skool é uma releitura moderna de um estilo clássico dos anos 90, marcado pela sua lingueta acolchoada e sidestripe moldada em 3D. Com seu perfil "Off The Wall", este tênis de cano baixo e amarrar possui cabedal resistente de camurça e lona, puxadores no calcanhar para facilitar a entrada e o solado Waffle de borracha exclusivo da marca.
-            </p>
-            <h2>TABELA DE MEDIDAS</h2>
-            <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/84d99d5f4d2f433d88046ba439244c26~tplv-aphluv4xwc-resize-webp:800:708.webp" alt="Tabela de Medidas" class="product-description-image">
-        </section>
-    </main>
+            </section>
+        
+        </main>
+
     <footer class="action-footer">
         <button class="footer-btn" id="buy-now-button">Comprar agora</button>
     </footer>
@@ -265,7 +214,6 @@
             <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104245_100x.png?v=1716468205" class="modal-product-img">
             <div class="price-container">
                 <span class="current-price">R$ 47,39</span>
-                <span class="original-price">R$ 249,83</span>
             </div>
             <svg class="modal-close-btn" id="modal-close-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </div>
@@ -283,35 +231,98 @@
                 <button class="quantity-btn" id="increase-qty">&plus;</button>
             </div>
         </div>
-        <button id="modal-confirm-btn">Confirmar</button>
+        <button id="modal-confirm-btn" disabled>Confirmar</button>
     </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    
-    const carouselSlider = document.querySelector('.carousel-slider');
-    const paginationContainer = document.querySelector('.carousel-pagination');
-    
-    const images = carouselSlider.querySelectorAll('img');
-    const imageCount = images.length;
-    let currentIndex = 0;
-    if (imageCount > 0) {
-        for (let i = 0; i < imageCount; i++) {
-            const dot = document.createElement('div');
-            dot.classList.add('pagination-dot');
-            dot.addEventListener('click', () => goToSlide(i));
-            paginationContainer.appendChild(dot);
-        }
-        const paginationDots = paginationContainer.querySelectorAll('.pagination-dot');
-        const goToSlide = (index) => {
-            currentIndex = index;
-            carouselSlider.style.transform = `translateX(-${currentIndex * 100}%)`;
-            paginationDots.forEach(d => d.classList.remove('active'));
-            paginationDots[currentIndex].classList.add('active');
-        };
-        goToSlide(0);
-    }
+    // --- DADOS ---
+    const productImages = [
+        "https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104245_1024x.png?v=1716468205",
+        "https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104255_1024x.png?v=1716468205",
+        "https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104304_1024x.png?v=1716468205",
+        "https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104327_1024x.png?v=1716468205"
+    ];
+    const reviewData = [
+        { avatar: "https://randomuser.me/api/portraits/women/3.jpg", name: "m***3", item: "KNU, 37", text: "entrega rápido, bom pelo preço super indico", image: "https://i.imgur.com/GjNChE0.png", date: "há 4 dias" },
+        { avatar: "https://randomuser.me/api/portraits/men/7.jpg", name: "L***a", item: "KNU, 38", text: "Veio no tamanho certo e confortável e não demorou pra entregar", image: "https://i.imgur.com/u7f3bYV.png", date: "há 1 semana" },
+        { avatar: "https://randomuser.me/api/portraits/women/9.jpg", name: "A***e", item: "KNU, 40", text: "Eu ameiiiiiiii lindo mesmo! Comprei ele na promoção", image: "https://i.imgur.com/KxP1h3W.png", date: "há 1 semana" },
+        { avatar: "https://randomuser.me/api/portraits/men/12.jpg", name: "P***a", item: "KNU, 38", text: "Muito estiloso, cadarço grosso como no anúncio. Recomendo!", image: "https://i.imgur.com/K3wSszG.png", date: "há 2 semanas" },
+        { avatar: "https://randomuser.me/api/portraits/women/14.jpg", name: "J***e", item: "KNU, 39", text: "É bonito, mas a forma é um pouco pequena. Aconselho pegar um número maior.", image: "https://i.imgur.com/8x8SzkC.png", date: "há 3 semanas" }
+    ];
 
+    // --- SELETORES DO DOM ---
+    const carouselSlider = document.querySelector('#product-carousel .carousel-slider');
+    const paginationContainer = document.querySelector('#product-carousel .carousel-pagination');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const reviewsContainer = document.querySelector('.reviews-section-header').parentElement;
+    
+    // --- LÓGICA DO CARROSSEL ---
+    let currentIndex = 0;
+    productImages.forEach(url => {
+        const img = document.createElement('img');
+        img.src = url;
+        carouselSlider.appendChild(img);
+    });
+
+    for (let i = 0; i < productImages.length; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('pagination-dot');
+        dot.addEventListener('click', () => goToSlide(i));
+        paginationContainer.appendChild(dot);
+    }
+    const paginationDots = paginationContainer.querySelectorAll('.pagination-dot');
+    
+    function goToSlide(index) {
+        if (index < 0) index = productImages.length - 1;
+        if (index >= productImages.length) index = 0;
+        
+        currentIndex = index;
+        carouselSlider.style.transform = `translateX(-${currentIndex * 100}%)`;
+        paginationDots.forEach(d => d.classList.remove('active'));
+        paginationDots[currentIndex].classList.add('active');
+    }
+    goToSlide(0); // Inicia no primeiro slide
+
+    prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+    let touchStartX = 0;
+    carouselSlider.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    carouselSlider.addEventListener('touchend', e => {
+        const touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) { goToSlide(currentIndex + 1); }
+        if (touchStartX - touchEndX < -50) { goToSlide(currentIndex - 1); }
+    });
+
+    // --- LÓGICA DAS AVALIAÇÕES ---
+    reviewData.forEach(review => {
+        const card = document.createElement('div');
+        card.className = 'review-card';
+        card.innerHTML = `
+            <div class="review-author">
+                <div class="review-author-info">
+                    <img src="${review.avatar}" alt="Avatar">
+                    <span>${review.name}</span>
+                </div>
+                <div class="review-stars">
+                    <svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <svg class="star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                </div>
+            </div>
+            <div class="review-item-details">Item: ${review.item}</div>
+            <p class="review-text">${review.text}</p>
+            <div class="review-images"><img src="${review.image}" alt="Foto da avaliação"></div>
+            <div class="review-date">${review.date}</div>
+        `;
+        reviewsContainer.appendChild(card);
+    });
+
+    // --- LÓGICA DO MODAL ---
     const openModalBtn = document.getElementById('open-modal-btn');
     const closeModalBtn = document.getElementById('modal-close-btn');
     const overlay = document.getElementById('modal-overlay');
@@ -328,11 +339,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const openModal = () => { overlay.classList.add('visible'); modalContainer.classList.add('visible'); };
     const closeModal = () => { overlay.classList.remove('visible'); modalContainer.classList.remove('visible'); };
     
-    const updateQuantity = (newQuantity) => {
-        if(newQuantity > 0) { 
-            quantity = newQuantity;
-            quantityValueSpan.textContent = quantity;
-            decreaseQtyBtn.disabled = (quantity === 1);
+    const updateQuantity = (change) => {
+        let currentQty = parseInt(quantityValueSpan.textContent, 10);
+        let newQuantity = currentQty + change;
+        if(newQuantity > 0) {
+            quantity = newQuantity; // Atualiza a variável global
+            quantityValueSpan.textContent = newQuantity;
+            decreaseQtyBtn.disabled = (newQuantity === 1);
         }
     };
 
@@ -357,10 +370,10 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.addEventListener('click', closeModal);
     sizeOptionsContainer.addEventListener('click', handleSizeSelection);
     confirmBtn.addEventListener('click', handleConfirm);
-    increaseQtyBtn.addEventListener('click', () => updateQuantity(quantity + 1));
-    decreaseQtyBtn.addEventListener('click', () => updateQuantity(quantity - 1));
-    confirmBtn.disabled = true;
-
+    increaseQtyBtn.addEventListener('click', () => updateQuantity(1));
+    decreaseQtyBtn.addEventListener('click', () => updateQuantity(-1));
+    
+    // LÓGICA DO BOTÃO COMPRAR
     const buyButton = document.getElementById('buy-now-button');
     buyButton.addEventListener('click', () => {
         if (!selectedSize) {
@@ -374,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
             variant: `KNU, ${selectedSize}`,
             price: '47.39',
             originalPrice: '249.83',
-            image: "https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e42d80beacec4087bb1a7172ed6fe5dc~tplv-aphluv4xwc-resize-webp:100:100.webp",
+            image: "https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104245_100x.png?v=1716468205",
             quantity: quantity,
             seller: "Vans"
         };
@@ -382,6 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'carrinho.html';
     });
     
+    // LÓGICA DO CRONÔMETRO
     function startCountdown() {
         const countdownElement = document.getElementById('countdown');
         if(!countdownElement) return;

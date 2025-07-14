@@ -14,8 +14,37 @@
             --disabled-color: #C9C9CF;
         }
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg-secondary); color: var(--text-primary); }
-        main { padding-bottom: 80px; }
+        main { padding-top: 60px; padding-bottom: 80px; }
         .icon { width: 24px; height: 24px; stroke-width: 2; color: var(--text-tertiary); flex-shrink: 0; }
+        
+        /* ATUALIZAÇÃO: Estilo do novo cabeçalho */
+        header.main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 8px 16px;
+            height: 44px;
+            background-color: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .header-icons-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
         .carousel-container { position: relative; width: 100%; overflow: hidden; aspect-ratio: 1/1; }
         .carousel-slider { height: 100%; display: flex; transition: transform 0.4s ease-in-out; touch-action: pan-y; }
         .carousel-slider img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
@@ -99,16 +128,22 @@
 </head>
 <body>
     <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="half-star-gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="50%" stop-color="var(--star-yellow)" /><stop offset="50%" stop-color="var(--border-color)" /></linearGradient></defs></svg>
+
+    <header class="main-header">
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <div class="header-icons-right">
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 19a8 8 0 100-16 8 8 0 000 16z"/><path d="M21 21l-4.35-4.35"/></svg>
+            <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+    </header>
+
     <main>
         <section class="carousel-container" id="product-carousel">
             <div class="carousel-slider">
-                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e42d80beacec4087bb1a7172ed6fe5dc~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 1">
-                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/74324eb384ec477b8eccea8910a7b5ee~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 2">
-                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/4b934462da28482896f515ca9f775dc7~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 3">
-                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/be1b71d95e7a486e99dd6de7ff1cf5ec~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 4">
-                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/cda42dc025594355aaaad9fb3a6b8286~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 5">
-                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/91cd95d3d0ae48d081c3289149208fa2~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 6">
-                <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/ea3aa7d877a94a158585c88815906412~tplv-aphluv4xwc-resize-webp:800:800.webp" alt="Tênis KNU Skate - Imagem 7">
+                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104245_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 1">
+                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104255_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 2">
+                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104304_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 3">
+                <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104327_1024x.png?v=1716468205" alt="Tênis KNU Skate - Imagem 4">
             </div>
             <div class="carousel-pagination"></div>
         </section>
@@ -227,7 +262,7 @@
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="modal-container">
         <div class="modal-header">
-            <img src="https://p16-oec-sg.ibyteimg.com/tos-alisg-i-aphluv4xwc-sg/e42d80beacec4087bb1a7172ed6fe5dc~tplv-aphluv4xwc-resize-webp:100:100.webp" class="modal-product-img">
+            <img src="https://paccshop.com/cdn/shop/files/Captura_de_tela_2024-05-23_104245_100x.png?v=1716468205" class="modal-product-img">
             <div class="price-container">
                 <span class="current-price">R$ 47,39</span>
                 <span class="original-price">R$ 249,83</span>
@@ -256,34 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const carouselSlider = document.querySelector('.carousel-slider');
     const paginationContainer = document.querySelector('.carousel-pagination');
+    
     const images = carouselSlider.querySelectorAll('img');
     const imageCount = images.length;
     let currentIndex = 0;
-    
-    // CORREÇÃO: Touch events para o carrossel
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    carouselSlider.addEventListener('touchstart', e => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-
-    carouselSlider.addEventListener('touchend', e => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
-
-    function handleSwipe() {
-        if (touchEndX < touchStartX) {
-            // Swipe left
-            goToSlide(currentIndex + 1);
-        }
-        if (touchEndX > touchStartX) {
-            // Swipe right
-            goToSlide(currentIndex - 1);
-        }
-    }
-    
     if (imageCount > 0) {
         for (let i = 0; i < imageCount; i++) {
             const dot = document.createElement('div');
@@ -293,9 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const paginationDots = paginationContainer.querySelectorAll('.pagination-dot');
         const goToSlide = (index) => {
-            if (index < 0) index = imageCount - 1;
-            if (index >= imageCount) index = 0;
-            
             currentIndex = index;
             carouselSlider.style.transform = `translateX(-${currentIndex * 100}%)`;
             paginationDots.forEach(d => d.classList.remove('active'));

@@ -5,21 +5,21 @@ const fetch = require('node-fetch');
 const app = express();
 
 // ===================================================================
-// CORREÇÃO 1: Configuração do CORS
-// A lista de domínios permitidos precisa ser um array de strings.
-// Adicionado seu domínio 'ttkshopvans.shop' e o 'www' para garantir.
+// CORREÇÃO FINAL: Adicionando seu domínio à lista de origens permitidas (CORS)
 const allowedOrigins = [
-  'https://testeapi-two.vercel.app',
-  'https://ttkshopvans.shop',
-  'https://www.ttkshopvans.shop'
+  'https://testeapi-two.vercel.app', // Mantemos para testes
+  'https://www.ttkshopvans.shop',    // Seu domínio principal com www
+  'https://ttkshopvans.shop'         // Seu domínio principal sem www
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
+    // Permite requisições que não têm uma 'origin' (como o Postman ou apps)
+    // ou se a 'origin' está na nossa lista de permissões.
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Não permitido pela política de CORS'));
+      callback(new Error('A política de CORS para este site não permite acesso.'));
     }
   }
 };
@@ -28,26 +28,21 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// SUAS CHAVES DA PAGUE-X
-const PAGUE_X_PUBLIC_KEY = "pk_live_v2BhVI3YN6FA8pS1M5j1XIae5UNj7w4uwA"; // Sua chave pública
-const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZ";
-
+// Suas chaves da Pague-X (ou Blackcat, se estiver usando)
+const PAGUE_X_PUBLIC_KEY = "pk_live_v2BhVI3YN6FA8pS1M5j1XIae5UNj7w4uwA";
+const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
 const PAGUE_X_URL = "https://api.pague-x.com/v1/transactions";
-
-// ===================================================================
-// CORREÇÃO 2: Autenticação Basic com as duas chaves
-// O formato correto é "chave_publica:chave_secreta" codificado em Base64.
 const base64Auth = Buffer.from(`${PAGUE_X_PUBLIC_KEY}:${PAGUE_X_SECRET_KEY}`).toString('base64');
-// ===================================================================
 
 // Rota de verificação
 app.get('/', (req, res) => {
-    res.send('Servidor da loja está online e pronto!');
+    res.send('Servidor da loja está online e pronto para receber pedidos!');
 });
 
 app.post('/criar-cobranca', async (req, res) => {
     const payload = req.body;
-    console.log("Backend: Recebido pedido. Payload:", JSON.stringify(payload, null, 2));
+    console.log("Backend: Recebido pedido de:", req.headers.origin);
+    console.log("Payload:", JSON.stringify(payload, null, 2));
     
     try {
         const response = await fetch(PAGUE_X_URL, {

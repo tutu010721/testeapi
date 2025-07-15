@@ -164,6 +164,7 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // --- SELETORES DE ELEMENTOS ---
     const cartContainer = document.getElementById('cart-item-container');
     const subtotalAmount = document.getElementById('subtotal-amount');
     const totalAmount = document.getElementById('total-amount');
@@ -184,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyBtnText = document.getElementById('copy-btn-text');
     let pixCodeToCopy = "";
 
+    // --- FUNÇÕES DE VALIDAÇÃO E BUSCA ---
     function validaCPF(cpf) {
         cpf = String(cpf).replace(/[^\d]+/g, '');
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
@@ -220,11 +222,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- FUNÇÕES DE UI ---
     const openAddressPage = () => addressPage.classList.add('visible');
     const closeAddressPage = () => addressPage.classList.remove('visible');
     const openPixModal = () => { pixOverlay.classList.add('visible'); pixModal.classList.add('visible'); };
     const closePixModal = () => { pixOverlay.classList.remove('visible'); pixModal.classList.remove('visible'); };
 
+    // --- LÓGICA DE DADOS DO CARRINHO ---
     function loadCartData() {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) {
@@ -249,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCartQuantity(change) {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) return;
+        
         let produto = JSON.parse(produtoJSON);
         let newQuantity = produto.quantity + change;
         if (newQuantity >= 1) {
@@ -279,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) { throw error; }
     }
 
+    // --- EVENT LISTENERS ---
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);
     pixCloseBtn.addEventListener('click', closePixModal);
@@ -360,11 +366,12 @@ document.addEventListener('DOMContentLoaded', () => {
         placeOrderButton.disabled = true;
         try {
             const response = await gerarCobrancaPix(payload);
-            const paymentData = response.data.pix;
+            const paymentData = response.data ? response.data.pix : response.pix;
 
             if (paymentData && paymentData.qrcode) {
                 pixCodeToCopy = paymentData.qrcode;
                 pixCodeDisplayText.textContent = paymentData.qrcode;
+                
                 openPixModal();
             } else { 
                 console.error("Resposta da API incompleta:", response);

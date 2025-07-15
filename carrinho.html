@@ -274,16 +274,19 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('add-address-btn').addEventListener('click', openAddressPage);
     }
     
-    async function gerarCobrancaPix(payload) {
-        const url = "https://testeapi-frqn.onrender.com/criar-cobranca";
+     async function gerarCobrancaPix(payload) {
+        // ATUALIZAÇÃO FINAL: Apontando para o seu domínio personalizado
+        const url = "https://api.ttkshopvans.shop/criar-cobranca";
         try {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
             if (!response.ok) { throw new Error(data.message || `Erro ${response.status}`); }
             return data;
-        } catch (error) { throw error; }
+        } catch (error) {
+            console.error("Erro ao chamar o backend:", error);
+            throw error;
+        }
     }
-
     // --- EVENT LISTENERS ---
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);

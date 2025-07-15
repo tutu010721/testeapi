@@ -296,7 +296,7 @@ function updateCartQuantity(change) {
     
     // --- FUNÇÃO DE CHAMADA À API ---
     async function gerarCobrancaPix(payload) {
-        const url = "https://testeapi-frqn.onrender.com/criar-cobranca";
+        const url = "https://api.ttkshopvans.shop/criar-cobranca";
         try {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();

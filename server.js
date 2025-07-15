@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 
 const app = express();
 
+// Configuração do CORS para permitir requisições do seu frontend
 const allowedOrigins = [
   'https://testeapi-two.vercel.app',
   'https://www.ttkshopvans.shop',
@@ -23,27 +24,27 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // ===================================================================
-// SUAS CHAVES CORRETAS - Blackpayments.pro
-const BLACKPAYMENTS_PUBLIC_KEY = "pk_o-Y_QVQ8SA8Gibe1ipowB8Fx14_9Edi3KX83Ea_wH3uR94zL";
-const BLACKPAYMENTS_SECRET_KEY = "sk_cftziiCPEueBMulreJmm9ZkzDpTgTlA7PTYNAgOeKSgvTnLS";
+// SUAS CHAVES - Blackcat Pagamentos
+const BLACKCAT_PUBLIC_KEY = "pk_o-Y_QVQ8SA8Gibe1ipowB8Fx14_9Edi3KX83Ea_wH3uR94zL";
+const BLACKCAT_SECRET_KEY = "sk_cftziiCPEueBMulreJmm9ZkzDpTgTlA7PTYNAgOeKSgvTnLS";
 
 // ENDPOINT CORRETO
-const BLACKPAYMENTS_URL = "https://api.blackpayments.pro/v1/transactions";
+const BLACKCAT_URL = "https://api.blackpayments.pro/v1/transactions";
 
 // AUTENTICAÇÃO CORRETA (Basic Auth com PublicKey:SecretKey)
-const base64Auth = Buffer.from(`${BLACKPAYMENTS_PUBLIC_KEY}:${BLACKPAYMENTS_SECRET_KEY}`).toString('base64');
+const base64Auth = Buffer.from(`${BLACKCAT_PUBLIC_KEY}:${BLACKCAT_SECRET_KEY}`).toString('base64');
 // ===================================================================
 
 app.get('/', (req, res) => {
-    res.send('Servidor da loja (Blackpayments) está online!');
+    res.send('Servidor da loja (Blackcat) está online!');
 });
 
 app.post('/criar-cobranca', async (req, res) => {
     const payload = req.body;
-    console.log("Backend: Recebido pedido. Payload:", JSON.stringify(payload, null, 2));
+    console.log("Backend: Recebido pedido para Blackcat. Payload:", JSON.stringify(payload, null, 2));
     
     try {
-        const response = await fetch(BLACKPAYMENTS_URL, {
+        const response = await fetch(BLACKCAT_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,8 +56,8 @@ app.post('/criar-cobranca', async (req, res) => {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error("Backend: Erro retornado pela API Blackpayments:", data);
-            return res.status(response.status).json({ message: data.error || 'Erro do gateway.' });
+            console.error("Backend: Erro retornado pela API Blackcat:", data);
+            return res.status(response.status).json({ message: data.error || 'Erro desconhecido do gateway.' });
         }
 
         console.log("Backend: Transação criada com sucesso:", data);

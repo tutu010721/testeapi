@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const quantityValueSpan = document.getElementById('quantity-value');
     const buyButton = document.getElementById('buy-now-button');
 
- // SUBSTITUA A LÓGICA DO CARROSSEL POR ESTA:
+ // SUBSTITUA A LÓGICA DO CARROSSEL PELA VERSÃO CORRIGIDA ABAIXO:
 
 // --- LÓGICA DO CARROSSEL ---
 const carouselSlider = document.querySelector('#product-carousel .carousel-slider');
@@ -258,6 +258,7 @@ const imageCount = images.length;
 let currentIndex = 0;
 
 if (imageCount > 0) {
+    paginationContainer.innerHTML = ''; // Limpa os pontos antigos para evitar duplicatas
     for (let i = 0; i < imageCount; i++) {
         const dot = document.createElement('div');
         dot.classList.add('pagination-dot');
@@ -276,7 +277,9 @@ if (imageCount > 0) {
         currentIndex = index;
         carouselSlider.style.transform = `translateX(-${currentIndex * 100}%)`;
         paginationDots.forEach(d => d.classList.remove('active'));
-        paginationDots[currentIndex].classList.add('active');
+        if (paginationDots[currentIndex]) {
+            paginationDots[currentIndex].classList.add('active');
+        }
     }
     
     goToSlide(0); 
@@ -299,7 +302,6 @@ if (imageCount > 0) {
         }
     });
 }
-
     // --- LÓGICA DAS AVALIAÇÕES ---
     reviewData.forEach(review => {
         const card = document.createElement('div');

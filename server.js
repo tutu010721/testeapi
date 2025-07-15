@@ -26,12 +26,11 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// Suas chaves da Pague-X
-const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa"; // Usando a chave que você confirmou
+// Suas chaves da Pague-X (ou outra, se tiver trocado)
+const PAGUE_X_PUBLIC_KEY = "pk_live_v2BhVI3YN6FA8pS1M5j1XIae5UNj7w4uwA";
+const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
 const PAGUE_X_URL = "https://api.pague-x.com/v1/transactions";
-
-// Autenticação no formato CORRETO ({SECRET_KEY}:x)
-const base64Auth = Buffer.from(`${PAGUE_X_SECRET_KEY}:x`).toString('base64');
+const base64Auth = Buffer.from(`${PAGUE_X_PUBLIC_KEY}:${PAGUE_X_SECRET_KEY}`).toString('base64');
 
 app.get('/', (req, res) => {
     res.send('Servidor da loja está online e pronto para receber pedidos!');
@@ -40,7 +39,6 @@ app.get('/', (req, res) => {
 app.post('/criar-cobranca', async (req, res) => {
     const payload = req.body;
     console.log("Backend: Recebido pedido de:", req.headers.origin);
-    console.log("Backend: Enviando payload para a Pague-X...");
     
     try {
         const response = await fetch(PAGUE_X_URL, {

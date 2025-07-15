@@ -72,7 +72,6 @@
         .pix-modal-content h2 { font-size: 18px; margin-top: 8px; margin-bottom: 8px; }
         .pix-modal-content p { color: var(--text-secondary); margin-bottom: 24px; font-size: 15px; line-height: 1.5; }
         .pix-modal-close-btn { position: absolute; top: 16px; right: 16px; cursor: pointer; color: var(--text-tertiary); }
-        #pix-qrcode-img { width: 200px; height: 200px; margin: 0 auto; display: block; background-color: var(--border-color); object-fit: contain; }
         .pix-code-block { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; margin-top: 16px; margin-bottom: 24px; }
         .pix-code-text { font-family: 'Courier New', Courier, monospace; font-size: 14px; color: var(--text-secondary); word-wrap: break-word; text-align: left; margin-bottom: 12px; }
         .copy-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: 25px; border: 1.5px solid var(--tiktok-red); background-color: #FFF2F4; color: var(--tiktok-red); font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
@@ -115,6 +114,7 @@
         </div>
         <button class="footer-button" id="place-order-button">Fazer pedido</button>
     </footer>
+
     <div class="address-page" id="address-page">
         <header>
             <div class="header-top">
@@ -153,7 +153,6 @@
         <svg class="pix-modal-close-btn" id="pix-modal-close-btn" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         <h2>Pague com Pix</h2>
         <p>Copie o código abaixo e pague no seu aplicativo do banco para finalizar a compra.</p>
-        <img id="pix-qrcode-img" src="" alt="QR Code Pix" style="display: none;">
         <div class="pix-code-block">
             <div class="pix-code-text" id="pix-code-text-display"></div>
         </div>
@@ -165,6 +164,7 @@
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // --- SELETORES DE ELEMENTOS ---
     const cartContainer = document.getElementById('cart-item-container');
     const subtotalAmount = document.getElementById('subtotal-amount');
     const totalAmount = document.getElementById('total-amount');
@@ -180,12 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pixOverlay = document.getElementById('pix-overlay');
     const pixModal = document.getElementById('pix-modal');
     const pixCloseBtn = document.getElementById('pix-modal-close-btn');
-    const pixQrCodeImg = document.getElementById('pix-qrcode-img');
     const pixCodeDisplayText = document.getElementById('pix-code-text-display');
     const copyPixCodeBtn = document.getElementById('copy-pix-code-btn');
     const copyBtnText = document.getElementById('copy-btn-text');
     let pixCodeToCopy = "";
 
+    // --- FUNÇÕES DE VALIDAÇÃO E BUSCA ---
     function validaCPF(cpf) {
         cpf = String(cpf).replace(/[^\d]+/g, '');
         if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
@@ -222,11 +222,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- FUNÇÕES DE UI (INTERFACE DO USUÁRIO) ---
     const openAddressPage = () => addressPage.classList.add('visible');
     const closeAddressPage = () => addressPage.classList.remove('visible');
     const openPixModal = () => { pixOverlay.classList.add('visible'); pixModal.classList.add('visible'); };
     const closePixModal = () => { pixOverlay.classList.remove('visible'); pixModal.classList.remove('visible'); };
 
+    // --- LÓGICA DE CARREGAMENTO E EXIBIÇÃO DE DADOS ---
     function loadCartData() {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) {
@@ -244,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
         footerTotalLabel.textContent = `Total (${produto.quantity} item)`;
         footerTotalAmount.textContent = totalFormatado;
         
+        // CORREÇÃO: Adiciona os listeners aos botões DEPOIS de criar o HTML
         document.getElementById('increase-cart-qty').addEventListener('click', () => updateCartQuantity(1));
         document.getElementById('decrease-cart-qty').addEventListener('click', () => updateCartQuantity(-1));
     }
@@ -251,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCartQuantity(change) {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) return;
-        
         let produto = JSON.parse(produtoJSON);
         let newQuantity = produto.quantity + change;
         if (newQuantity >= 1) {
@@ -282,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) { throw error; }
     }
 
+    // --- EVENT LISTENERS ---
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);
     pixCloseBtn.addEventListener('click', closePixModal);
@@ -368,15 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (paymentData && paymentData.qrcode) {
                 pixCodeToCopy = paymentData.qrcode;
                 pixCodeDisplayText.textContent = paymentData.qrcode;
-                
-                // Verifica se a URL da imagem do QR Code existe antes de tentar usá-la
-                if (paymentData.qrcode_image_url) {
-                    pixQrCodeImg.src = paymentData.qrcode_image_url;
-                    pixQrCodeImg.style.display = 'block'; // Mostra a imagem
-                } else {
-                    pixQrCodeImg.style.display = 'none'; // Esconde se não houver imagem
-                }
-
                 openPixModal();
             } else { 
                 console.error("Resposta da API incompleta:", response);
@@ -390,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Roda as funções de carregamento quando a página abre
     loadCartData();
     loadUserData();
 });

@@ -5,30 +5,35 @@ const fetch = require('node-fetch');
 const app = express();
 
 // Configuração do CORS para permitir requisições do seu frontend
+const allowedOrigins = [
+  'https://testeapi-two.vercel.app',
+  'https://www.ttkshopvans.shop',
+  'https://ttkshopvans.shop'
+];
+
 const corsOptions = {
-  origin: [
-    'https://testeapi-two.vercel.app', // Sua URL de teste do Vercel
-    'https://www.ttkshopvans.shop',    // Seu domínio principal com www
-    'https://ttkshopvans.shop'         // Seu domínio principal sem www
-  ],
-  optionsSuccessStatus: 200
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Não permitido pela política de CORS'));
+    }
+  }
 };
 app.use(cors(corsOptions));
 app.use(express.json());
 
 // SUAS CHAVES DA PAGUE-X
-const PAGUE_X_PUBLIC_KEY = "pk_13YJ3DhtaH9ZPBo8eVPqMctGqpHB87NayFcO_j_iKEVfgvCR";
-const PAGUE_X_SECRET_KEY = "sk_Y7izervKtLXqR4hUz6tU1eIMX6T9bWbyrCvHxIAsOerkH7Fe";
+const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
 
 // ENDPOINT CORRETO
 const PAGUE_X_URL = "https://api.pague-x.com/v1/transactions";
 
-// AUTENTICAÇÃO CORRETA (Basic Auth com PublicKey:SecretKey)
-const base64Auth = Buffer.from(`${PAGUE_X_PUBLIC_KEY}:${PAGUE_X_SECRET_KEY}`).toString('base64');
+// AUTENTICAÇÃO CORRETA (Basic Auth com {SECRET_KEY}:x)
+const base64Auth = Buffer.from(`${PAGUE_X_SECRET_KEY}:x`).toString('base64');
 
-// Rota de verificação
 app.get('/', (req, res) => {
-    res.send('Servidor da loja está online e pronto para receber pedidos!');
+    res.send('Servidor da loja está online!');
 });
 
 app.post('/criar-cobranca', async (req, res) => {

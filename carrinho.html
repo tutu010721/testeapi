@@ -366,14 +366,15 @@ document.addEventListener('DOMContentLoaded', () => {
         placeOrderButton.disabled = true;
         try {
             const response = await gerarCobrancaPix(payload);
-            
-            // A API da Pague-X retorna os dados dentro de um objeto 'data'
-            const transactionData = response.data;
-            const paymentData = transactionData ? transactionData.pix : null;
+            const paymentData = response.data ? response.data.pix : response.pix;
 
             if (paymentData && paymentData.qrcode) {
                 pixCodeToCopy = paymentData.qrcode;
                 pixCodeDisplayText.textContent = paymentData.qrcode;
+                
+                // A Pague-X não retorna a imagem do QR Code na criação,
+                // então vamos apenas exibir o código "copia e cola".
+                
                 openPixModal();
             } else { 
                 console.error("Resposta da API incompleta:", response);

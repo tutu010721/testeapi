@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumo do Pedido</title>
     <style>
+        /* CSS completo e correto */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         :root {
             --tiktok-red: #FE2C55; --text-primary: #161823; --text-secondary: #5C5E67;
@@ -222,13 +223,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- FUNÇÕES DE UI (INTERFACE DO USUÁRIO) ---
+    // --- FUNÇÕES DE UI ---
     const openAddressPage = () => addressPage.classList.add('visible');
     const closeAddressPage = () => addressPage.classList.remove('visible');
     const openPixModal = () => { pixOverlay.classList.add('visible'); pixModal.classList.add('visible'); };
     const closePixModal = () => { pixOverlay.classList.remove('visible'); pixModal.classList.remove('visible'); };
 
-    // --- LÓGICA DE CARREGAMENTO E EXIBIÇÃO DE DADOS ---
+    // --- LÓGICA DE DADOS DO CARRINHO ---
     function loadCartData() {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) {
@@ -246,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
         footerTotalLabel.textContent = `Total (${produto.quantity} item)`;
         footerTotalAmount.textContent = totalFormatado;
         
-        // CORREÇÃO: Adiciona os listeners aos botões DEPOIS de criar o HTML
         document.getElementById('increase-cart-qty').addEventListener('click', () => updateCartQuantity(1));
         document.getElementById('decrease-cart-qty').addEventListener('click', () => updateCartQuantity(-1));
     }
@@ -254,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCartQuantity(change) {
         const produtoJSON = localStorage.getItem('cartItem');
         if (!produtoJSON) return;
+        
         let produto = JSON.parse(produtoJSON);
         let newQuantity = produto.quantity + change;
         if (newQuantity >= 1) {
@@ -274,19 +275,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('add-address-btn').addEventListener('click', openAddressPage);
     }
     
-     async function gerarCobrancaPix(payload) {
-        // ATUALIZAÇÃO FINAL: Apontando para o seu domínio personalizado
+    async function gerarCobrancaPix(payload) {
         const url = "https://api.ttkshopvans.shop/criar-cobranca";
         try {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
             if (!response.ok) { throw new Error(data.message || `Erro ${response.status}`); }
             return data;
-        } catch (error) {
-            console.error("Erro ao chamar o backend:", error);
-            throw error;
-        }
+        } catch (error) { throw error; }
     }
+
     // --- EVENT LISTENERS ---
     addressCloseBtn.addEventListener('click', closeAddressPage);
     cepInput.addEventListener('blur', buscaCEP);

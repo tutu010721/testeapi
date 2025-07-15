@@ -4,10 +4,9 @@ const fetch = require('node-fetch');
 
 const app = express();
 
-// ===================================================================
-// CORREÇÃO FINAL: Adicionando seu domínio à lista de origens permitidas (CORS)
+// Configuração do CORS para permitir requisições do seu frontend
 const allowedOrigins = [
-  'https://testeapi-two.vercel.app', // Mantemos para testes
+  'https://testeapi-two.vercel.app', // URL de teste do Vercel
   'https://www.ttkshopvans.shop',    // Seu domínio principal com www
   'https://ttkshopvans.shop'         // Seu domínio principal sem www
 ];
@@ -22,23 +21,27 @@ const corsOptions = {
   }
 };
 app.use(cors(corsOptions));
-// ===================================================================
-
 app.use(express.json());
 
-// Suas chaves da Pague-X (ou outra, se tiver trocado)
+// Suas chaves da Pague-X
 const PAGUE_X_PUBLIC_KEY = "pk_live_v2BhVI3YN6FA8pS1M5j1XIae5UNj7w4uwA";
 const PAGUE_X_SECRET_KEY = "sk_live_v2wcnMTDb8qlnzOoOjKt7AR16cbYkTRZlnCLwYW6LZa";
+
+// Endpoint CORRETO para criar transações
 const PAGUE_X_URL = "https://api.pague-x.com/v1/transactions";
+
+// Autenticação CORRETA (Basic Auth com PublicKey:SecretKey)
 const base64Auth = Buffer.from(`${PAGUE_X_PUBLIC_KEY}:${PAGUE_X_SECRET_KEY}`).toString('base64');
 
+// Rota de verificação para sabermos que o servidor está no ar
 app.get('/', (req, res) => {
-    res.send('Servidor da loja está online e pronto para receber pedidos!');
+    res.send('Servidor da loja está online e pronto!');
 });
 
 app.post('/criar-cobranca', async (req, res) => {
     const payload = req.body;
     console.log("Backend: Recebido pedido de:", req.headers.origin);
+    console.log("Backend: Enviando payload para a Pague-X...");
     
     try {
         const response = await fetch(PAGUE_X_URL, {

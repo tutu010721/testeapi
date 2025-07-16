@@ -101,6 +101,21 @@
         footer.action-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 90; display: flex; padding: 12px 16px; background-color: var(--bg-primary); border-top: 1px solid var(--border-color); }
         .footer-btn { flex-grow: 1; border: none; background-color: var(--tiktok-red); color: #ffffff; padding: 12px; border-radius: 4px; font-size: 16px; font-weight: 700; cursor: pointer; }
     </style>
+
+<!-- TikTok Pixel Code Start -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+
+
+  ttq.load('D1O21RRC77UD9VPNEC50');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
+<!-- TikTok Pixel Code End -->
+    
 </head>
 <body>
     <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="half-star-gradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="50%" stop-color="var(--star-yellow)" /><stop offset="50%" stop-color="var(--border-color)" /></linearGradient></defs></svg>
